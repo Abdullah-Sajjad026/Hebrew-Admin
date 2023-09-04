@@ -53,34 +53,7 @@ const formSchema = z
     timeToRead: z.string().nonempty(),
 
     fileName: z.string().nonempty(),
-    // content type can be either 'pdf' or 'text'
-    contentType: z.enum(["pdf", "text"]),
   })
-  // Requirement:
-  /*
-    if action is add:
-      cover image is required
-      if content type is pdf:
-        pdf is required
-        study content is not required
-      if content type is text:
-        study content is required
-        pdf is not required
-
-    if action is update:
-      if cover image source is present:
-        cover image is optional
-      
-      if content type is pdf:
-        study content is surely optional
-        if pdf src is present:
-          pdf is optional
-        else:
-          pdf is required
-      if content type is text:
-        pdf is surely optional
-        study content is required
-  */
   .superRefine((val, ctx) => {
     // lets implement the requirement with proper error messages
 
@@ -95,33 +68,16 @@ const formSchema = z
         });
       }
 
-      // if content type is pdf
-      if (val.contentType === "pdf") {
-        // pdf is required
-        if (!val.pdf) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "pdf is required",
-            path: ["pdf"],
-          });
-        }
-
-        // study content is not required
+      // at least one of pdf or study content is required
+      if (!val.pdf && !val.studyContent) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "at least one of pdf or study content is required",
+          path: ["pdf", "studyContent"],
+        });
       }
 
-      // if content type is text
-      if (val.contentType === "text") {
-        // study content is required
-        if (!val.studyContent) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "study content is required",
-            path: ["studyContent"],
-          });
-        }
-
-        // pdf is not required
-      }
+      // both pdf and study content can be added if wanted
     }
 
     // if action is update
@@ -140,36 +96,7 @@ const formSchema = z
         }
       }
 
-      // if content type is pdf
-      if (val.contentType === "pdf") {
-        // study content is surely optional
-        // if pdf src is present
-        if (val.pdfSrc) {
-          // pdf is optional
-        } else {
-          // pdf is required
-          if (!val.pdf) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: "pdf is required",
-              path: ["pdf"],
-            });
-          }
-        }
-      }
-
-      // if content type is text
-      if (val.contentType === "text") {
-        // pdf is surely optional
-        // study content is required
-        if (!val.studyContent) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "study content is required",
-            path: ["studyContent"],
-          });
-        }
-      }
+      // both pdf and study content can be added if wanted
     }
   });
 
@@ -181,7 +108,6 @@ const INITIAL_VALUES: DefaultValues<SubcategoryContentFormState> = {
   studyContent: "",
   coverImage: undefined,
   pdf: undefined,
-  contentType: "text",
   pdfSrc: "",
   coverImageSrc: "",
   timeToRead: undefined,
@@ -265,88 +191,49 @@ const SubcategoryContentForm = ({
 
             <FormField
               control={form.control}
-              name="contentType"
+              name="studyContent"
               render={({ field }) => (
-                <FormItem className="flex gap-2 space-y-0">
+                <FormItem className="flex gap-4 space-y-0">
                   <FormLabel className="basis-28 whitespace-nowrap">
-                    {"Content Type"}:
+                    {t("pages.dailyStudies.studyContent")}:
                   </FormLabel>
-                  <div className="space-y-2">
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Choose your content type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="pdf">PDF</SelectItem>
-                        <SelectItem value="text">TEXT</SelectItem>
-                      </SelectContent>
-                    </Select>
-
-                    <FormDescription>
-                      You can either upload a pdf file or enter text content
-                    </FormDescription>
-
+                  <div className="flex-col gap-2">
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        cols={80}
+                        rows={10}
+                        placeholder="Enter your study content here"
+                      />
+                    </FormControl>
                     <FormMessage />
                   </div>
                 </FormItem>
               )}
             />
 
-            {
-              // if the content type is pdf, show the pdf input
-              form.watch("contentType") === "pdf" ? (
-                <FormField
-                  control={form.control}
-                  name="pdf"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0 flex gap-2">
-                      <FormLabel className="basis-28 whitespace-nowrap">
-                        {"Pdf"}:
-                      </FormLabel>
-                      <div className="space-y-5">
-                        <FormControl>
-                          <FileInputBox
-                            {...field}
-                            fileType="pdf"
-                            fileSrc={form.getValues().pdfSrc}
-                          />
-                        </FormControl>
+            <FormField
+              control={form.control}
+              name="pdf"
+              render={({ field }) => (
+                <FormItem className="space-y-0 flex gap-2">
+                  <FormLabel className="basis-28 whitespace-nowrap">
+                    {"Pdf"}:
+                  </FormLabel>
+                  <div className="space-y-5">
+                    <FormControl>
+                      <FileInputBox
+                        {...field}
+                        fileType="pdf"
+                        fileSrc={form.getValues().pdfSrc}
+                      />
+                    </FormControl>
 
-                        <FormMessage />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              ) : (
-                <FormField
-                  control={form.control}
-                  name="studyContent"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-4 space-y-0">
-                      <FormLabel className="basis-28 whitespace-nowrap">
-                        {t("pages.dailyStudies.studyContent")}:
-                      </FormLabel>
-                      <div className="flex-col gap-2">
-                        <FormControl>
-                          <Textarea
-                            {...field}
-                            cols={80}
-                            rows={10}
-                            placeholder="Enter your study content here"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              )
-            }
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}
