@@ -22,13 +22,7 @@ import {
   DEFAULT_ACCEPTED_IMAGE_TYPES,
 } from "@/constants/general-schemas";
 import useCategoryForm from "../../categories/hooks/use-category-form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import SassySelect from "@/components/ui/sassy-select";
 
 const formSchema = z

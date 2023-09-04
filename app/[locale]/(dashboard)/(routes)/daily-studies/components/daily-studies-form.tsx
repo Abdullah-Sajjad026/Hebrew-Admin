@@ -4,6 +4,8 @@ import React from "react";
 import { z } from "zod";
 import { DefaultValues, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Editable, useEditor } from "@wysimark/react";
+
 import { useI18n } from "@/internationalization/client";
 
 import { FileInputBox } from "@/components/ui/file-input-box";
@@ -11,24 +13,18 @@ import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import {
   fileSchema,
   DEFAULT_ACCEPTED_IMAGE_TYPES,
 } from "@/constants/general-schemas";
+
 const formSchema = z
   .object({
     action: z.enum(["add", "update"]),
@@ -114,6 +110,7 @@ const DailyStudiesForm = ({
   initialValues = INITIAL_VALUES,
 }: DailyStudiesFormProps) => {
   const t = useI18n();
+  const editor = useEditor({});
 
   const form = useForm<DailyStudiesFormState>({
     resolver: zodResolver(formSchema),
@@ -216,11 +213,18 @@ const DailyStudiesForm = ({
                   </FormLabel>
                   <div className="flex-col gap-2">
                     <FormControl>
-                      <Textarea
+                      {/* <Textarea
                         {...field}
                         cols={80}
                         rows={10}
                         placeholder="Enter your study content here"
+                      /> */}
+
+                      <Editable
+                        editor={editor}
+                        value={field.value!}
+                        onChange={field.onChange}
+                        className="w-full min-w-[700px] min-h-[400px] border border-primary"
                       />
                     </FormControl>
                     <FormMessage />
