@@ -21,6 +21,7 @@ import {
 } from "@/constants/general-schemas";
 import { FileInputBox } from "@/components/ui/file-input-box";
 import { Textarea } from "@/components/ui/textarea";
+import { Editable, useEditor } from "@wysimark/react";
 
 type PopupNewsFormProps = {
   /* a header component to render above the form. Excluded from the form and not in the className implementation */
@@ -74,6 +75,7 @@ export default function PopupNewsForm({
   initialValues = INITIAL_VALUES,
 }: PopupNewsFormProps) {
   const t = useI18n();
+  const editor = useEditor({});
 
   const form = useForm<PopupNewsFormState>({
     resolver: zodResolver(formSchema),
@@ -131,7 +133,12 @@ export default function PopupNewsForm({
                       <FormLabel>{t("words.text") + ":"} </FormLabel>
                       <div className="space-y-2 flex-grow">
                         <FormControl>
-                          <Textarea {...field} />
+                          <Editable
+                            editor={editor}
+                            value={field.value!}
+                            onChange={field.onChange}
+                            className="w-full min-w-[700px] min-h-[400px] border border-primary"
+                          />
                         </FormControl>
                         <FormMessage />
                       </div>
