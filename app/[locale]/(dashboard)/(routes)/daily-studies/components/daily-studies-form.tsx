@@ -29,7 +29,6 @@ import {
   fileSchema,
   DEFAULT_ACCEPTED_IMAGE_TYPES,
 } from "@/constants/general-schemas";
-
 const formSchema = z
   .object({
     action: z.enum(["add", "update"]),
@@ -39,51 +38,17 @@ const formSchema = z
       })
     ),
     pdfSrc: z.string().optional(),
-
-    studyContent: z.string().optional(),
-
+    studyContent: z.optional(z.string()),
     coverImage: z.optional(
       fileSchema({
         acceptedTypes: DEFAULT_ACCEPTED_IMAGE_TYPES,
       })
     ),
     coverImageSrc: z.string().optional(),
-
     fileName: z.string().nonempty(),
-    // content type can be either 'pdf' or 'text'
-    contentType: z.enum(["pdf", "text"]),
   })
-  // Requirement:
-  /*
-    if action is add:
-      cover image is required
-      if content type is pdf:
-        pdf is required
-        study content is not required
-      if content type is text:
-        study content is required
-        pdf is not required
-
-    if action is update:
-      if cover image source is present:
-        cover image is optional
-      
-      if content type is pdf:
-        study content is surely optional
-        if pdf src is present:
-          pdf is optional
-        else:
-          pdf is required
-      if content type is text:
-        pdf is surely optional
-        study content is required
-  */
   .superRefine((val, ctx) => {
-    // lets implement the requirement with proper error messages
-
-    // if action is add
     if (val.action === "add") {
-      // cover image is required
       if (!val.coverImage) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
@@ -91,81 +56,30 @@ const formSchema = z
           path: ["coverImage"],
         });
       }
-
-      // if content type is pdf
-      if (val.contentType === "pdf") {
-        // pdf is required
-        if (!val.pdf) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "pdf is required",
-            path: ["pdf"],
-          });
-        }
-
-        // study content is not required
-      }
-
-      // if content type is text
-      if (val.contentType === "text") {
-        // study content is required
-        if (!val.studyContent) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "study content is required",
-            path: ["studyContent"],
-          });
-        }
-
-        // pdf is not required
+      if (!val.pdf && !val.studyContent) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "at least one of the following is required: pdf, study content",
+          path: ["pdf", "studyContent"],
+        });
       }
     }
-
-    // if action is update
     if (val.action === "update") {
-      // if cover image source is present
-      if (val.coverImageSrc) {
-        // cover image is optional
-      } else {
-        // cover image is required
-        if (!val.coverImage) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "cover image is required",
-            path: ["coverImage"],
-          });
-        }
+      if (!val.coverImage && !val.coverImageSrc) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "cover image is required",
+          path: ["coverImage"],
+        });
       }
-
-      // if content type is pdf
-      if (val.contentType === "pdf") {
-        // study content is surely optional
-        // if pdf src is present
-        if (val.pdfSrc) {
-          // pdf is optional
-        } else {
-          // pdf is required
-          if (!val.pdf) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: "pdf is required",
-              path: ["pdf"],
-            });
-          }
-        }
-      }
-
-      // if content type is text
-      if (val.contentType === "text") {
-        // pdf is surely optional
-        // study content is required
-        if (!val.studyContent) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "study content is required",
-            path: ["studyContent"],
-          });
-        }
+      if (!val.pdf && !val.pdfSrc && !val.studyContent) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "at least one of the following is required: pdf, study content",
+          path: ["pdf", "studyContent"],
+        });
       }
     }
   });
@@ -178,7 +92,6 @@ const INITIAL_VALUES: DefaultValues<DailyStudiesFormState> = {
   studyContent: "",
   coverImage: undefined,
   pdf: undefined,
-  contentType: "text",
   pdfSrc: "",
   coverImageSrc: "",
 };
@@ -259,7 +172,7 @@ const DailyStudiesForm = ({
               )}
             />
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="contentType"
               render={({ field }) => (
@@ -291,58 +204,53 @@ const DailyStudiesForm = ({
                   </div>
                 </FormItem>
               )}
+            /> */}
+
+            <FormField
+              control={form.control}
+              name="studyContent"
+              render={({ field }) => (
+                <FormItem className="flex gap-4 space-y-0">
+                  <FormLabel className="basis-28 whitespace-nowrap">
+                    {t("pages.dailyStudies.studyContent")}:
+                  </FormLabel>
+                  <div className="flex-col gap-2">
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        cols={80}
+                        rows={10}
+                        placeholder="Enter your study content here"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
             />
 
-            {
-              // if the content type is pdf, show the pdf input
-              form.watch("contentType") === "pdf" ? (
-                <FormField
-                  control={form.control}
-                  name="pdf"
-                  render={({ field }) => (
-                    <FormItem className="space-y-0 flex gap-2">
-                      <FormLabel className="basis-28 whitespace-nowrap">
-                        {"Pdf"}:
-                      </FormLabel>
-                      <div className="space-y-5">
-                        <FormControl>
-                          <FileInputBox
-                            {...field}
-                            fileType="pdf"
-                            fileSrc={form.getValues().pdfSrc}
-                          />
-                        </FormControl>
+            <FormField
+              control={form.control}
+              name="pdf"
+              render={({ field }) => (
+                <FormItem className="space-y-0 flex gap-2">
+                  <FormLabel className="basis-28 whitespace-nowrap">
+                    {"Pdf"}:
+                  </FormLabel>
+                  <div className="space-y-5">
+                    <FormControl>
+                      <FileInputBox
+                        {...field}
+                        fileType="pdf"
+                        fileSrc={form.getValues().pdfSrc}
+                      />
+                    </FormControl>
 
-                        <FormMessage />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              ) : (
-                <FormField
-                  control={form.control}
-                  name="studyContent"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-4 space-y-0">
-                      <FormLabel className="basis-28 whitespace-nowrap">
-                        {t("pages.dailyStudies.studyContent")}:
-                      </FormLabel>
-                      <div className="flex-col gap-2">
-                        <FormControl>
-                          <Textarea
-                            {...field}
-                            cols={80}
-                            rows={10}
-                            placeholder="Enter your study content here"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </div>
-                    </FormItem>
-                  )}
-                />
-              )
-            }
+                    <FormMessage />
+                  </div>
+                </FormItem>
+              )}
+            />
 
             {footer && footer}
           </div>

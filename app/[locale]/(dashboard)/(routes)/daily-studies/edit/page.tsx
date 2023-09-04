@@ -31,8 +31,6 @@ export default function Page() {
     );
     const pdfRef = ref(fireStorage, `daily-studies/${editingDoc?.id}-pdf`);
 
-    console.log({ values });
-
     try {
       let newCoverSrc, newPdfSrc;
 
@@ -67,14 +65,9 @@ export default function Page() {
         coverImage: newCoverSrc || editingDoc?.coverImage,
         pdfLink: newPdfSrc || editingDoc?.pdfLink,
         studyContent: values.studyContent,
-        contentType: values.contentType,
+        // contentType: values.contentType,
         updatedAt: serverTimestamp(),
       };
-
-      console.log({
-        updatedDoc,
-        values,
-      });
 
       await updateDoc(studyDoc, updatedDoc);
 
@@ -99,7 +92,6 @@ export default function Page() {
         coverImageSrc: editingDoc?.coverImage,
         pdfSrc: editingDoc?.pdfLink,
         studyContent: editingDoc?.studyContent,
-        contentType: editingDoc?.contentType,
       }}
       footer={
         <div className="mt-4 flex justify-between">

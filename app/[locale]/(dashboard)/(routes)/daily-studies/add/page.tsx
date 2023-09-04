@@ -42,13 +42,17 @@ export default function Page() {
     try {
       const studyFile: Partial<DailyStudyDocument> = {
         name: values.fileName,
-        contentType: values.contentType,
         createdAt: serverTimestamp(),
+        // contentType: values.contentType,
       };
 
-      if (values.contentType === "text") {
+      // if (values.contentType === "text") {
+      //   studyFile["studyContent"] = values.studyContent;
+      //   studyFile["pdfLink"] = "";
+      // }
+
+      if (values.studyContent) {
         studyFile["studyContent"] = values.studyContent;
-        studyFile["pdfLink"] = "";
       }
 
       // adding new Doc
@@ -64,7 +68,7 @@ export default function Page() {
 
         let filePdfDownloadUrl;
 
-        if (values.contentType === "pdf") {
+        if (values.pdf) {
           await uploadBytes(pdfRef, values.pdf!);
           console.log("study file pdf uploaded");
 
@@ -75,9 +79,10 @@ export default function Page() {
         const updatedDoc = {
           updatedAt: serverTimestamp(),
           coverImage: fileCoverDownloadUrl,
-          ...(values.contentType === "pdf"
-            ? { pdfLink: filePdfDownloadUrl, studyContent: "" }
-            : {}),
+          pdfLink: filePdfDownloadUrl,
+          // ...(values.contentType === "pdf"
+          //   ? { pdfLink: filePdfDownloadUrl, studyContent: "" }
+          //   : {}),
         };
 
         await updateDoc(studyDoc, updatedDoc);
