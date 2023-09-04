@@ -41,15 +41,17 @@ type PopupNewsFormProps = {
 
 const formSchema = z.object({
   newsContent: z.string().nonempty(),
-  newsImage: fileSchema({
-    isRequired: true,
-    acceptedTypes: DEFAULT_ACCEPTED_IMAGE_TYPES,
-  }),
-  newsVideo: fileSchema({
-    isRequired: true,
-    acceptedTypes: DEFAULT_ACCEPTED_VIDEO_TYPES,
-    maxSize: DEFAULT_VIDEO_MAX_SIZE,
-  }),
+  newsImage: z.optional(
+    fileSchema({
+      acceptedTypes: DEFAULT_ACCEPTED_IMAGE_TYPES,
+    })
+  ),
+  newsVideo: z.optional(
+    fileSchema({
+      acceptedTypes: DEFAULT_ACCEPTED_VIDEO_TYPES,
+      maxSize: DEFAULT_VIDEO_MAX_SIZE,
+    })
+  ),
 });
 
 export type PopupNewsFormState = z.infer<typeof formSchema>;

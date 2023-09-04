@@ -1,19 +1,11 @@
 "use client";
 
+// Importing necessary packages and components
 import React from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  serverTimestamp,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { fireStorage, firestore } from "@/lib/firebase/firebase-config";
 import { useI18n } from "@/internationalization/client";
 
@@ -24,11 +16,14 @@ import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import useSubcategoryContentForm from "../hooks/use-subcategory-content-form";
 
+// Defining the Page component
 export default function Page({
   params,
 }: {
   params: { subcategoryId: string };
 }) {
+  // Initializing necessary variables and hooks
+
   const t = useI18n();
   const router = useRouter();
   const subcategoryId = params.subcategoryId;
@@ -37,6 +32,7 @@ export default function Page({
 
   const [isUploading, setIsUploading] = React.useState(false);
 
+  // Validating if the subcategory and content exist
   React.useEffect(() => {
     // validating if the subcategory exists
     const subcategoryRef = doc(firestore, "subcategories", subcategoryId);
@@ -71,8 +67,9 @@ export default function Page({
         toast.error("Error getting content");
         router.push("/404");
       });
-  }, [subcategoryId, router]);
+  }, [subcategoryId, router, editingDoc?.id]);
 
+  // Function to handle form submission on update
   const onUpdate = async (values: SubcategoryContentFormState) => {
     const loadingToastId = toast.loading("Updating content ...");
     setIsUploading(true);
@@ -87,6 +84,7 @@ export default function Page({
     try {
       let newCoverSrc, newPdfSrc;
 
+      // Uploading cover image if provided
       if (values.coverImage) {
         try {
           await uploadBytes(coverImgRef, values.coverImage);
@@ -100,6 +98,7 @@ export default function Page({
         }
       }
 
+      // Uploading PDF if provided
       if (values.pdf) {
         try {
           await uploadBytes(pdfRef, values.pdf);
@@ -113,28 +112,32 @@ export default function Page({
         }
       }
 
+      // Updating the document with new values
       const updatedDoc = {
         name: values.fileName,
         coverImage: newCoverSrc || editingDoc?.coverImage,
         pdf: newPdfSrc || editingDoc?.pdf,
         studyContent: values.studyContent,
-        contentType: values.contentType,
         timeToRead: values.timeToRead,
         updatedAt: serverTimestamp(),
       };
 
       await updateDoc(studyDoc, updatedDoc);
 
+      // Displaying success message and navigating back
       toast.dismiss(loadingToastId);
       toast.success("Updated Successfully");
       router.back();
     } catch (error) {
       console.log({ error });
 
+      // Displaying error message
       toast.dismiss(loadingToastId);
       toast.error("There was an error updating the content");
     }
   };
+
+  // Rendering the SubcategoryContentForm component with necessary props
   return (
     <SubcategoryContentForm
       action="update"
@@ -145,7 +148,6 @@ export default function Page({
         coverImageSrc: editingDoc?.coverImage,
         pdfSrc: editingDoc?.pdf,
         studyContent: editingDoc?.studyContent,
-        contentType: editingDoc?.contentType,
         timeToRead: editingDoc?.timeToRead,
       }}
       footer={

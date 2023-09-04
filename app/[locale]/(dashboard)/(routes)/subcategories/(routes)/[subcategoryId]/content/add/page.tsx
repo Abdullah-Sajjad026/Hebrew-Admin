@@ -64,13 +64,12 @@ export default function Page({
     try {
       const studyFile: Partial<SubcategoryContentDocument> = {
         name: values.fileName,
-        contentType: values.contentType,
         timeToRead: values.timeToRead,
         parentId: subcategoryId,
         createdAt: serverTimestamp(),
       };
 
-      if (values.contentType === "text") {
+      if (values.studyContent) {
         studyFile["studyContent"] = values.studyContent;
         studyFile["pdf"] = "";
       }
@@ -88,7 +87,7 @@ export default function Page({
 
         let filePdfDownloadUrl;
 
-        if (values.contentType === "pdf") {
+        if (values.pdf) {
           await uploadBytes(pdfRef, values.pdf!);
           console.log("study file pdf uploaded");
 
@@ -99,9 +98,7 @@ export default function Page({
         const updatedDoc = {
           updatedAt: serverTimestamp(),
           coverImage: fileCoverDownloadUrl,
-          ...(values.contentType === "pdf"
-            ? { pdfLink: filePdfDownloadUrl, studyContent: "" }
-            : {}),
+          ...(values.pdf ? { pdf: filePdfDownloadUrl } : {}),
         };
 
         await updateDoc(studyDoc, updatedDoc);
@@ -133,7 +130,6 @@ export default function Page({
   return (
     <SubcategoryContentForm
       action="add"
-      // @ts-ignore
       onSubmit={onAddContent}
       footer={
         <div className="mt-4 flex justify-between">

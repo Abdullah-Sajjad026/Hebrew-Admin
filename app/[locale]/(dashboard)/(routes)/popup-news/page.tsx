@@ -78,18 +78,27 @@ export default function PopupNews() {
               <ListItem key={news.id} className="flex flex-col items-start">
                 <div className="flex justify-between gap-3 w-full">
                   <div className="flex gap-3">
-                    <Image
-                      src={news.image}
-                      width={100}
-                      height={100}
-                      alt="News image"
-                      className="object-cover h-24 w-28 rounded-md"
-                    />
-                    <video
-                      src={news.video}
-                      controls
-                      className="object-cover h-24 w-28 rounded-md"
-                    />
+                    {news.image ? (
+                      <Image
+                        src={news.image}
+                        width={100}
+                        height={100}
+                        alt="News image"
+                        className="object-cover h-24 w-28 rounded-md"
+                      />
+                    ) : (
+                      <span>No image</span>
+                    )}
+
+                    {news.video ? (
+                      <video
+                        src={news.video}
+                        controls
+                        className="object-cover h-24 w-28 rounded-md"
+                      />
+                    ) : (
+                      <span>No video</span>
+                    )}
                   </div>
                   <div>
                     <ActionsDropdown
