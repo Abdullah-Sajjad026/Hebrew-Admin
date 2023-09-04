@@ -114,48 +114,51 @@ export default function Page() {
       //   });
 
       // trying to upload image to storage and update the document with the image url. if error occurs, delete the document from news collection and return from the function
-      try {
-        await uploadBytes(imageRef, values.newsImage);
-        console.log("News image uploaded");
 
-        const downloadURL = await getDownloadURL(imageRef);
-        await updateDoc(newsDoc, {
-          image: downloadURL,
-          updatedAt: serverTimestamp(),
-        });
-      } catch (error) {
-        console.log({ error });
+      if (values.newsImage)
+        try {
+          await uploadBytes(imageRef, values.newsImage);
+          console.log("News image uploaded");
 
-        setIsUploading(false);
-        toast.dismiss(loadingToastId);
-        toast.error("News cannot be added. Error while uploading image.");
-        // delete the document from news collection
-        deleteDoc(newsDoc);
+          const downloadURL = await getDownloadURL(imageRef);
+          await updateDoc(newsDoc, {
+            image: downloadURL,
+            updatedAt: serverTimestamp(),
+          });
+        } catch (error) {
+          console.log({ error });
 
-        return;
-      }
+          setIsUploading(false);
+          toast.dismiss(loadingToastId);
+          toast.error("News cannot be added. Error while uploading image.");
+          // delete the document from news collection
+          deleteDoc(newsDoc);
 
-      // trying to upload video to storage and update the document with the video url. if error occurs, delete the document from news collection and return from the function
-      try {
-        await uploadBytes(videoRef, values.newsVideo);
-        console.log("News video uploaded");
+          return;
+        }
 
-        const downloadURL = await getDownloadURL(videoRef);
-        await updateDoc(newsDoc, {
-          video: downloadURL,
-          updatedAt: serverTimestamp(),
-        });
-      } catch (error) {
-        setIsUploading(false);
+      if (values.newsVideo)
+        // trying to upload video to storage and update the document with the video url. if error occurs, delete the document from news collection and return from the function
+        try {
+          await uploadBytes(videoRef, values.newsVideo);
+          console.log("News video uploaded");
 
-        console.log({ error });
-        toast.dismiss(loadingToastId);
-        toast.error("News cannot be added. Error while uploading video.");
-        // delete the document from news collection
-        deleteDoc(newsDoc);
+          const downloadURL = await getDownloadURL(videoRef);
+          await updateDoc(newsDoc, {
+            video: downloadURL,
+            updatedAt: serverTimestamp(),
+          });
+        } catch (error) {
+          setIsUploading(false);
 
-        return;
-      }
+          console.log({ error });
+          toast.dismiss(loadingToastId);
+          toast.error("News cannot be added. Error while uploading video.");
+          // delete the document from news collection
+          deleteDoc(newsDoc);
+
+          return;
+        }
 
       // if everything is successful, dismiss the loading toast and show success toast
       setIsUploading(false);
