@@ -43,9 +43,7 @@ export default function Page() {
           studyData.push({ id: doc.id, ...doc.data() } as RequestsData);
         });
 
-        const filteredData: RequestsData[] = studyData.filter(
-          (data) => data.approve === false
-        );
+        const filteredData: RequestsData[] = studyData;
 
         setRequests({
           state: "success",
@@ -79,6 +77,7 @@ export default function Page() {
         <span>{t("words.serialNo")}</span>
         <span>{t("words.requests")}</span>
         <span>{t("pages.requests.type")}</span>
+        <span>{t("actions.approve")}</span>
         <span>{t("actions.edit")}</span>
       </ListItem>
       <div className="mt-6">
@@ -98,18 +97,30 @@ export default function Page() {
                   ) : (
                     <span className="text-red-500"> {data.type}</span>
                   )}
-                  <ActionsDropdown
-                    onApprove={() => {
-                      setEditingDoc(data);
-                      router.push("/requests/approve");
-                    }}
-                    onDelete={() => {
-                      setDeleteAlert({
-                        isOpen: true,
-                        id: data.id,
-                      });
-                    }}
-                  />
+                  <span>{data.approve ? "Yes" : "No"}</span>
+                  {data.approve === false ? (
+                    <ActionsDropdown
+                      onApprove={() => {
+                        setEditingDoc(data);
+                        router.push("/requests/approve");
+                      }}
+                      onDelete={() => {
+                        setDeleteAlert({
+                          isOpen: true,
+                          id: data.id,
+                        });
+                      }}
+                    />
+                  ) : (
+                    <ActionsDropdown
+                      onDelete={() => {
+                        setDeleteAlert({
+                          isOpen: true,
+                          id: data.id,
+                        });
+                      }}
+                    />
+                  )}
                 </ListItem>
               );
             })}

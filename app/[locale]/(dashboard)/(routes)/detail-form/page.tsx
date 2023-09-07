@@ -7,14 +7,14 @@ import { ListItem } from "@/components/ui/list-item";
 import { NavLink } from "@/components/ui/nav-link";
 import { useI18n } from "@/internationalization/client";
 import { firestore } from "@/lib/firebase/firebase-config";
-import { collection, doc, onSnapshot } from "firebase/firestore";
+import {  doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { Loader, Plus } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import useDetailForm from "./components/hooks/use-detail-form";
+import toast from "react-hot-toast";
 
 function Page() {
   const t = useI18n();
-  const {setDetailFields} = useDetailForm()
+
   const [detailForm, setDetailForm] = useState<{
     state: RequestState;
     data: filed[];
@@ -41,13 +41,81 @@ function Page() {
             state: "success",
             data: filteredData,
           });
-          setDetailFields(filteredData);
+          
         }
       }
     );
 
     return () => unsubscribe();
   }, []);
+
+  const handleOptional = async (name: string) => {
+    const docRef = doc(firestore, "appconfig", "detail-form");
+    let loading = toast.loading("Updating...");
+    try {
+        await updateDoc(docRef, {
+            fields: detailForm.data?.map((data) => {
+              if (data.name === name) {
+                return {
+                  ...data,
+                  value: false,
+                };
+              } else {
+                return data;
+              }
+            }),
+          });
+            toast.success("Updated successfully");
+            toast.dismiss(loading);
+    } catch (error) {
+        toast.error("Something went wrong");
+        toast.dismiss(loading);
+    }
+        
+  }
+
+
+  const handleRequired = async (name: string) => {
+    const docRef = doc(firestore, "appconfig", "detail-form");
+    let loading = toast.loading("Updating...");
+    try {
+        await updateDoc(docRef, {
+            fields: detailForm.data?.map((data) => {
+              if (data.name === name) {
+                return {
+                  ...data,
+                  value: true,
+                };
+              } else {
+                return data;
+              }
+            }),
+          });
+            toast.success("Updated successfully");
+            toast.dismiss(loading);
+    } catch (error) {
+        toast.error("Something went wrong");
+        toast.dismiss(loading);
+    }
+        
+  }
+
+
+    const handleDelete = async (name: string) => {
+        const docRef = doc(firestore, "appconfig", "detail-form");
+        let loading = toast.loading("Deleting...");
+        try {
+            await updateDoc(docRef, {
+                fields: detailForm.data?.filter((data) => data.name !== name),
+              });
+                toast.success("Deleted successfully");
+                toast.dismiss(loading);
+        } catch (error) {
+            toast.error("Something went wrong");
+            toast.dismiss(loading);
+            console.log(error)
+        }
+    }
 
   console.log(detailForm.data);
   return (
@@ -79,8 +147,8 @@ function Page() {
                 data.value === true ? 
                 <ActionsDropdown
                     onOptional={() => {
-                    //   setEditingLink(data);
-                    //   router.push("/links/edit");
+                        handleOptional(data.name);
+                        
                     }}
                     onDelete={() => {
                       setDeleteAlert({
@@ -91,8 +159,8 @@ function Page() {
                   />:
                   <ActionsDropdown
                     onRequired={() => {
-                    //   setEditingLink(data);
-                    //   router.push("/links/edit");
+                        
+                        handleRequired(data.name);
                     }}
                     onDelete={() => {
                       setDeleteAlert({
@@ -117,7 +185,7 @@ function Page() {
           })
         }
         onConfirm={()=>{
-            console.log("delete");
+            handleDelete(deleteAlert.type);
         }}
       />
     </div>

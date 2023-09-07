@@ -44,12 +44,12 @@ export const ActionsDropdown = (props: ActionsDropdownProps) => {
           </DropdownMenuItem>
         )}
          {props.onOptional && (
-          <DropdownMenuItem onClick={props.onDelete}>
+          <DropdownMenuItem onClick={props.onOptional}>
             {t("pages.detailForm.optional")}
           </DropdownMenuItem>
         )}
         {props.onRequired && (
-          <DropdownMenuItem onClick={props.onDelete}>
+          <DropdownMenuItem onClick={props.onRequired}>
             {t("pages.detailForm.required")}
           </DropdownMenuItem>
         )}
