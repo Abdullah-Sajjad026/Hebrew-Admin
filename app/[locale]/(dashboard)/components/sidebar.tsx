@@ -103,7 +103,7 @@ export const DashboardSidebar = () => {
           height="80"
           src={logoUrl || "/images/admin-logo.png"}
           alt="Admin Image"
-          className="rounded-full w-20 h-80"
+          className="rounded-full w-16 h-16"
         />
         <span className="text-lg font-bold">
           {/* eslint-disable-next-line react/no-unescaped-entities */}

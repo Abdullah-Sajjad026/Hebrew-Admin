@@ -4,7 +4,8 @@ type DailyStudyDocument = {
   coverImage: string;
   pdfLink: string;
   studyContent: string;
-  contentType: "text" | "pdf";
+  contentType: "text" | "pdf" | "Both";
   createdAt: FieldValue;
   updatedAt: FieldValue;
+  showDate: string
 };
