@@ -79,6 +79,17 @@ export default {
     subcategoryContent: {
       formTitle: "טופס תוכן קטגוריה משנה",
     },
+    detailForm:{
+      fieldName:"שם שדה",
+      AddField:"הוסף שדה",
+      optional:"לא חובה",
+      required:"חובה",
+      formTitle:"טופס פירוט",
+      AddNewField:"הוסף שדה",
+      EditForm:"ערוך טופס:"
+
+
+    }
   },
   intervals: {
     "seconds#other": "{count} שניות",

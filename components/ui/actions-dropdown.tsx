@@ -15,6 +15,8 @@ type ActionsDropdownProps = {
   onDelete?: () => void;
   onApprove?: () => void;
   onContent?: () => void;
+  onOptional?: () => void;
+  onRequired?: () => void;
 };
 
 export const ActionsDropdown = (props: ActionsDropdownProps) => {
@@ -41,11 +43,22 @@ export const ActionsDropdown = (props: ActionsDropdownProps) => {
             {t("actions.edit")}
           </DropdownMenuItem>
         )}
+         {props.onOptional && (
+          <DropdownMenuItem onClick={props.onOptional}>
+            {t("pages.detailForm.optional")}
+          </DropdownMenuItem>
+        )}
+        {props.onRequired && (
+          <DropdownMenuItem onClick={props.onRequired}>
+            {t("pages.detailForm.required")}
+          </DropdownMenuItem>
+        )}
         {props.onDelete && (
           <DropdownMenuItem onClick={props.onDelete}>
             {t("actions.delete")}
           </DropdownMenuItem>
         )}
+       
       </DropdownMenuContent>
     </DropdownMenu>
   );

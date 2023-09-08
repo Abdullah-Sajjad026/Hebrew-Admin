@@ -91,6 +91,18 @@ export default {
     subcategoryContent: {
       formTitle: "Subcategory Content Form",
     },
+    detailForm:{
+      fieldName:"field name",
+      AddField:"Add Fields",
+      optional:"Optional",
+      required:"Required",
+      formTitle:"Detail Form",
+      AddNewField:"Add a Field",
+      EditForm:"Edit Form",
+      
+
+
+    }
   },
   intervals: {
     "seconds#other": "{count} שניות",

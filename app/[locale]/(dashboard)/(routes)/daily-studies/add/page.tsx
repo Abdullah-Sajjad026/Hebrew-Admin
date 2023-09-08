@@ -43,13 +43,14 @@ export default function Page() {
       const studyFile: Partial<DailyStudyDocument> = {
         name: values.fileName,
         createdAt: serverTimestamp(),
-        // contentType: values.contentType,
+        showDate: values.showDate,
+        contentType: values.contentType,
       };
 
-      // if (values.contentType === "text") {
-      //   studyFile["studyContent"] = values.studyContent;
-      //   studyFile["pdfLink"] = "";
-      // }
+      if (values.contentType === "text") {
+        studyFile["studyContent"] = values.studyContent;
+        studyFile["pdfLink"] = "";
+      }
 
       if (values.studyContent) {
         studyFile["studyContent"] = values.studyContent;
@@ -66,7 +67,7 @@ export default function Page() {
         console.log("study file cover image uploaded");
         const fileCoverDownloadUrl = await getDownloadURL(coverImgRef);
 
-        let filePdfDownloadUrl;
+        let filePdfDownloadUrl = "";
 
         if (values.pdf) {
           await uploadBytes(pdfRef, values.pdf!);
@@ -80,9 +81,9 @@ export default function Page() {
           updatedAt: serverTimestamp(),
           coverImage: fileCoverDownloadUrl,
           pdfLink: filePdfDownloadUrl,
-          // ...(values.contentType === "pdf"
-          //   ? { pdfLink: filePdfDownloadUrl, studyContent: "" }
-          //   : {}),
+          ...(values.contentType === "pdf"
+            ? { pdfLink: filePdfDownloadUrl, studyContent: "" }
+            : {}),
         };
 
         await updateDoc(studyDoc, updatedDoc);

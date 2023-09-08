@@ -21,6 +21,7 @@ import {
 } from "@/constants/general-schemas";
 import { FileInputBox } from "@/components/ui/file-input-box";
 import { Textarea } from "@/components/ui/textarea";
+//@ts-ignore
 import { Editable, useEditor } from "@wysimark/react";
 
 type PopupNewsFormProps = {

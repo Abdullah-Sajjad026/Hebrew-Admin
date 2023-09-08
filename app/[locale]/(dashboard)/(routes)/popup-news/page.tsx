@@ -140,11 +140,19 @@ export default function PopupNews() {
           );
 
           try {
-            await deleteObject(newsImageRef);
-            console.log("news image deleted");
+            try {
+              await deleteObject(newsImageRef);
+              console.log("news image deleted");
+            } catch (e) {
+              console.log("no image to delete");
+            }
 
-            await deleteObject(newsVideoRef);
-            console.log("news video deleted");
+            try {
+              await deleteObject(newsVideoRef);
+              console.log("news video deleted");
+            } catch (e) {
+              console.log("no video to delete");
+            }
 
             await deleteDoc(doc(firestore, "news", deleteAlert.id));
           } catch (error) {
