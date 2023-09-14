@@ -20,6 +20,7 @@ export default {
       detailForm: "טופס פירוט",
       popupNews: "חדשות קופצות",
       logout: "להתנתק",
+      book:"סֵפֶר"
     },
   },
   pages: {
