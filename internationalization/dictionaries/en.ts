@@ -32,6 +32,7 @@ export default {
       detailForm: "Detail Form",
       popupNews: "Popup News",
       logout: "Logout",
+      book:"Book",
     },
   },
   pages: {

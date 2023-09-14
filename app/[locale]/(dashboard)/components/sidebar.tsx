@@ -10,6 +10,7 @@ import { firestore } from "@/lib/firebase/firebase-config";
 import { doc, onSnapshot } from "firebase/firestore";
 import {
   Banknote,
+  Book,
   BookOpen,
   FileText,
   GalleryVertical,
@@ -81,6 +82,11 @@ export const DashboardSidebar = () => {
       name: scopedT("popupNews"),
       href: `/popup-news`,
       icon: Newspaper,
+    },
+    {
+      name: scopedT("book"),
+      href: `/book`,
+      icon: Book,
     },
   ];
 
