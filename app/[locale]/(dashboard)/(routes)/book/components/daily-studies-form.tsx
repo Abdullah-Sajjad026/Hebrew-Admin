@@ -130,7 +130,7 @@ const DailyStudiesForm = ({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="space-y-8">
             <div className="flex justify-between">
-              <FormLabel>{t("pages.dailyStudies.formTitle")}</FormLabel>
+              <FormLabel>{t("pages.book.formTitle")}</FormLabel>
 
               {/* select here */}
             </div>
@@ -212,7 +212,7 @@ const DailyStudiesForm = ({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Choose your content type" />
+                          <SelectValue placeholder={t("micsWords.chooseType")} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -223,7 +223,7 @@ const DailyStudiesForm = ({
                     </Select>
 
                     <FormDescription>
-                      You can either upload a pdf file or enter text content 
+                      {t("micsWords.choiseBetweenPdfAndFile")}
                     </FormDescription>
 
                     <FormMessage />

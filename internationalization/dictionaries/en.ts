@@ -103,6 +103,14 @@ export default {
       
 
 
+    },
+    book:{
+      formTitle:"Book Form",
+      bookName:"Book Name",
+      bookDescription:"Book Description",
+      bookCover:"Book Cover",
+      bookFile:"Book File",
+  
     }
   },
   intervals: {
@@ -167,4 +175,18 @@ export default {
     timeToRead: "Time to read",
     content: "Content",
   },
+  micsWords:{
+    "Choose a Parent Category":"Choose a Parent Category",
+    choiseBetweenPdfAndFile:"You can either upload a pdf file or enter text content ",
+    chooseType:"Choose your content type",
+    
+  },
+  book:{
+    formTitle:"Book Form",
+    bookName:"Book Name",
+    bookDescription:"Book Description",
+    bookCover:"Book Cover",
+    bookFile:"Book File",
+
+  }
 } as const;

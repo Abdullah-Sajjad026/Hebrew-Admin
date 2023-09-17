@@ -67,6 +67,7 @@ export default function Page({
         timeToRead: values.timeToRead,
         parentId: subcategoryId,
         createdAt: serverTimestamp(),
+        contentType: values.contentType,
       };
 
       if (values.studyContent) {

@@ -90,6 +90,14 @@ export default {
       EditForm:"ערוך טופס:"
 
 
+    },
+    book:{
+      formTitle:"טופס ספר",
+      bookName:"שם הספר",
+      bookDescription:"תיאור ספר",
+      bookCover:"כריכה",
+      bookFile:"קובץ ספר",
+  
     }
   },
   intervals: {
@@ -155,4 +163,10 @@ export default {
     content: "תוכן",
     timeToRead: "זמן לקריאה",
   },
+  micsWords:{
+    "Choose a Parent Category":"בחר קטגוריית אב",
+    choiseBetweenPdfAndFile:"אתה יכול להעלות קובץ pdf או להזין תוכן טקסט",
+    chooseType:"בחר את סוג התוכן שלך",
+  },
+
 } as const;

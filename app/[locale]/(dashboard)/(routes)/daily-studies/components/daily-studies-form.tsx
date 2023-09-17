@@ -212,7 +212,7 @@ const DailyStudiesForm = ({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Choose your content type" />
+                          <SelectValue placeholder={t("micsWords.chooseType")} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -223,7 +223,7 @@ const DailyStudiesForm = ({
                     </Select>
 
                     <FormDescription>
-                      You can either upload a pdf file or enter text content 
+                    {t("micsWords.choiseBetweenPdfAndFile")}
                     </FormDescription>
 
                     <FormMessage />
