@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,6 +24,7 @@ import {
   DEFAULT_ACCEPTED_IMAGE_TYPES,
 } from "@/constants/general-schemas";
 import SassySelect from "@/components/ui/sassy-select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z
   .object({
@@ -46,6 +48,9 @@ const formSchema = z
     timeToRead: z.string().nonempty(),
 
     fileName: z.string().nonempty(),
+    contentType: z.enum(["pdf", "text",]),
+
+    
   })
   .superRefine((val, ctx) => {
     // lets implement the requirement with proper error messages
@@ -104,6 +109,7 @@ const INITIAL_VALUES: DefaultValues<SubcategoryContentFormState> = {
   pdfSrc: "",
   coverImageSrc: "",
   timeToRead: undefined,
+  contentType: "pdf",
 };
 
 // Component Prop
@@ -125,6 +131,9 @@ const SubcategoryContentForm = ({
 }: SubcategoryContentFormProps) => {
   const t = useI18n();
   const editor = useEditor({});
+  type TypeOfDoc = "pdf" | "text" | undefined
+  const [contentType, setContentType] = React.useState<TypeOfDoc>(initialValues.contentType);
+
 
   const form = useForm<SubcategoryContentFormState>({
     resolver: zodResolver(formSchema),
@@ -183,51 +192,93 @@ const SubcategoryContentForm = ({
               )}
             />
 
-            <FormField
+<FormField
               control={form.control}
-              name="studyContent"
+              name="contentType"
               render={({ field }) => (
-                <FormItem className="flex gap-4 space-y-0">
+                <FormItem className="flex gap-2 space-y-0">
                   <FormLabel className="basis-28 whitespace-nowrap">
-                    {t("pages.dailyStudies.studyContent")}:
+                    {"Content Type"}:
                   </FormLabel>
-                  <div className="flex-col gap-2">
-                    <FormControl>
-                      <Editable
-                        editor={editor}
-                        value={field.value!}
-                        onChange={field.onChange}
-                        className="w-full min-w-[700px] min-h-[400px] border border-primary"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </div>
-                </FormItem>
-              )}
-            />
+                  <div className="space-y-2">
+                    <Select
+                      onValueChange={(value)=>{
+                        field.onChange(value);
+                        setContentType(value as TypeOfDoc);
+                      }}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder={t("micsWords.chooseType")} />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="pdf">PDF</SelectItem>
+                        <SelectItem value="text">TEXT</SelectItem>
+                        
+                      </SelectContent>
+                    </Select>
 
-            <FormField
-              control={form.control}
-              name="pdf"
-              render={({ field }) => (
-                <FormItem className="space-y-0 flex gap-2">
-                  <FormLabel className="basis-28 whitespace-nowrap">
-                    {"Pdf"}:
-                  </FormLabel>
-                  <div className="space-y-5">
-                    <FormControl>
-                      <FileInputBox
-                        {...field}
-                        fileType="pdf"
-                        fileSrc={form.getValues().pdfSrc}
-                      />
-                    </FormControl>
+                    <FormDescription>
+                    {t("micsWords.choiseBetweenPdfAndFile")}
+                    </FormDescription>
 
                     <FormMessage />
                   </div>
                 </FormItem>
               )}
             />
+
+         {
+            contentType === "text" ? 
+            <FormField
+            control={form.control}
+            name="studyContent"
+            render={({ field }) => (
+              <FormItem className="flex gap-4 space-y-0">
+                <FormLabel className="basis-28 whitespace-nowrap">
+                  {t("pages.dailyStudies.studyContent")}:
+                </FormLabel>
+                <div className="flex-col gap-2">
+                  <FormControl>
+                    <Editable
+                      editor={editor}
+                      value={field.value!}
+                      onChange={field.onChange}
+                      className="w-full min-w-[700px] min-h-[400px] border border-primary"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </div>
+              </FormItem>
+            )}
+          />
+          :
+
+          <FormField
+            control={form.control}
+            name="pdf"
+            render={({ field }) => (
+              <FormItem className="space-y-0 flex gap-2">
+                <FormLabel className="basis-28 whitespace-nowrap">
+                  {"Pdf"}:
+                </FormLabel>
+                <div className="space-y-5">
+                  <FormControl>
+                    <FileInputBox
+                      {...field}
+                      fileType="pdf"
+                      fileSrc={form.getValues().pdfSrc}
+                    />
+                  </FormControl>
+
+                  <FormMessage />
+                </div>
+              </FormItem>
+            )}
+          />
+         }
 
             <FormField
               control={form.control}
