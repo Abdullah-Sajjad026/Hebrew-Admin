@@ -6,6 +6,8 @@ type ConsultationDoc ={
     content:string;
     fileType:"paid"|"free";
     id:'string';
+    videoLink:string;
+
 
 
 }

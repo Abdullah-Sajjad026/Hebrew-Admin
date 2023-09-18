@@ -5,7 +5,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { DEFAULT_ACCEPTED_IMAGE_TYPES, fileSchema } from '@/constants/general-schemas'
+import { DEFAULT_ACCEPTED_IMAGE_TYPES, fileSchema , DEFAULT_VIDEO_MAX_SIZE, DEFAULT_ACCEPTED_VIDEO_TYPES } from '@/constants/general-schemas'
 import { useI18n } from '@/internationalization/client'
 import { zodResolver } from '@hookform/resolvers/zod';
 import React from 'react'
@@ -25,6 +25,13 @@ const formSchema = z.object({
     ),
     coverImageSrc : z.string(),
     fileName: z.string().nonempty(),
+    Video: z.optional(
+      fileSchema({
+        acceptedTypes: DEFAULT_ACCEPTED_VIDEO_TYPES,
+        maxSize: DEFAULT_VIDEO_MAX_SIZE,
+      })
+    ),
+    videoSrc: z.string(),
 })
 
 
@@ -39,6 +46,9 @@ const INITIAL_VALUES : DefaultValues<AddFileFormState> = {
     coverImageSrc : "",
     coverImage:undefined,
     fileName: "",
+    Video: undefined,
+    videoSrc:""
+    
 }
 
 
@@ -162,6 +172,8 @@ const AddFileForm = ({
               )}
             />
             </div>
+
+            <div className='flex flex-row items-center justify-around'>
             <FormField
               control={form.control}
               name="coverImage"
@@ -184,6 +196,24 @@ const AddFileForm = ({
                 </FormItem>
               )}
             /> 
+            <FormField
+                control={form.control}
+                name="Video"
+                render={({ field }) => (
+                  <FormItem className="space-y-0 flex gap-2">
+                    <FormLabel>{t("words.video") + ":"} </FormLabel>
+                    <div className="space-y-2">
+                      <FormControl>
+                        <FileInputBox fileType="video" {...field} fileSrc={form.getValues().videoSrc} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </div>
+            
     </div>
     {footer && footer}
     </form>

@@ -38,6 +38,7 @@ const Page = () => {
       fireStorage,
       `consultation/${editingForm?.id}-image`
     );
+    const videoRef = ref(fireStorage, `consultation/${editingForm?.id}-video`);
 
     try {
       const updatedDoc: Partial<ConsultationDoc> = {
@@ -53,11 +54,15 @@ const Page = () => {
       }
 
       let newCoverSrc: string | undefined = undefined;
+      let videoLink: string | undefined = undefined;
       if (values.coverImage) {
         try {
           await uploadBytes(coverImgRef, values.coverImage);
           newCoverSrc = await getDownloadURL(coverImgRef);
           console.log("image uploaded");
+          await uploadBytes(videoRef, values.Video!);
+          videoLink = await getDownloadURL(videoRef);
+          console.log("video uploaded");
         } catch (error) {
           console.log({ error });
 
@@ -69,6 +74,7 @@ const Page = () => {
       }
 
       (updatedDoc["coverImage"] = newCoverSrc || editingForm?.coverImage),
+        (updatedDoc["videoLink"] = videoLink || editingForm?.videoLink);
         console.log(updatedDoc);
 
       await updateDoc(studyDoc, updatedDoc);
@@ -96,6 +102,7 @@ const Page = () => {
           amount: String(editingForm?.amount),
           coverImageSrc: editingForm?.coverImage,
           fileName: editingForm?.fileName,
+          videoSrc: editingForm?.videoLink as any,
         }}
         action="update"
         onSubmit={onUpdate}
