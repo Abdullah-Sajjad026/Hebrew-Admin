@@ -53,14 +53,19 @@ const Page = () => {
       // adding new Doc
       const consultDoc = await addDoc(consultationCollection, consultFile);
       const coverImgRef = ref(folderRef, `${consultDoc.id}-image`);
+      const videoRef = ref(folderRef, `${consultDoc.id}-video`);
 
       try {
         await uploadBytes(coverImgRef, values.coverImage!);
         console.log("image uploaded");
         const fileCoverDownloadUrl = await getDownloadURL(coverImgRef);
+        await uploadBytes(videoRef, values.Video!);
+        console.log("video uploaded");
+        const fileVideoDownloadUrl = await getDownloadURL(videoRef);
         const updatedDoc = {
           updatedAt: serverTimestamp(),
           coverImage: fileCoverDownloadUrl,
+          videoLink: fileVideoDownloadUrl,
         };
 
         await updateDoc(consultDoc, updatedDoc);
