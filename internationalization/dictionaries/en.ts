@@ -32,7 +32,7 @@ export default {
       detailForm: "Detail Form",
       popupNews: "Popup News",
       logout: "Logout",
-      book:"Book",
+      book: "Book",
     },
   },
   pages: {
@@ -92,26 +92,22 @@ export default {
     subcategoryContent: {
       formTitle: "Subcategory Content Form",
     },
-    detailForm:{
-      fieldName:"field name",
-      AddField:"Add Fields",
-      optional:"Optional",
-      required:"Required",
-      formTitle:"Detail Form",
-      AddNewField:"Add a Field",
-      EditForm:"Edit Form",
-      
-
-
+    detailForm: {
+      fieldName: "field name",
+      AddField: "Add Fields",
+      optional: "Optional",
+      required: "Required",
+      formTitle: "Detail Form",
+      AddNewField: "Add a Field",
+      EditForm: "Edit Form",
     },
-    book:{
-      formTitle:"Book Form",
-      bookName:"Book Name",
-      bookDescription:"Book Description",
-      bookCover:"Book Cover",
-      bookFile:"Book File",
-  
-    }
+    book: {
+      formTitle: "Book Form",
+      bookName: "Book Name",
+      bookDescription: "Book Description",
+      bookCover: "Book Cover",
+      bookFile: "Book File",
+    },
   },
   intervals: {
     "seconds#other": "{count} שניות",
@@ -153,6 +149,7 @@ export default {
     image: "Image",
     file: "File",
     title: "Title",
+    fileType: "File Type",
     description: "Description",
     serialNo: "Sr #",
     dailyStudies: "Daily Studies",
@@ -174,19 +171,20 @@ export default {
     noContent: "No Content",
     timeToRead: "Time to read",
     content: "Content",
-  },
-  micsWords:{
-    "Choose a Parent Category":"Choose a Parent Category",
-    choiseBetweenPdfAndFile:"You can either upload a pdf file or enter text content ",
-    chooseType:"Choose your content type",
-    
-  },
-  book:{
-    formTitle:"Book Form",
-    bookName:"Book Name",
-    bookDescription:"Book Description",
-    bookCover:"Book Cover",
-    bookFile:"Book File",
 
-  }
+    showDate: "תאריך",
+  },
+  micsWords: {
+    chooseParentCategory: "Choose a Parent Category",
+    chooseBetweenPdfAndFile:
+      "You can either upload a pdf file or enter text content ",
+    chooseType: "Choose your content type",
+  },
+  book: {
+    formTitle: "Book Form",
+    bookName: "Book Name",
+    bookDescription: "Book Description",
+    bookCover: "Book Cover",
+    bookFile: "Book File",
+  },
 } as const;

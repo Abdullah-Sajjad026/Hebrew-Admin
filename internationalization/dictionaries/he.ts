@@ -20,7 +20,7 @@ export default {
       detailForm: "טופס פירוט",
       popupNews: "חדשות קופצות",
       logout: "להתנתק",
-      book:"סֵפֶר"
+      book: "סֵפֶר",
     },
   },
   pages: {
@@ -70,35 +70,32 @@ export default {
     },
     consultation: {
       addBtn: "הוסף מוצר חדש",
-      files: "קבצים",
+      files: "תוכן",
       payment: "בתשלום",
-      formTitle: "טופס קובץ",
+      formTitle: "טופס",
       free: "חינם",
       paid: "שולם",
-      amount: "כמות",
+      amount: "סכום",
     },
     subcategoryContent: {
       formTitle: "טופס תוכן קטגוריה משנה",
     },
-    detailForm:{
-      fieldName:"שם שדה",
-      AddField:"הוסף שדה",
-      optional:"לא חובה",
-      required:"חובה",
-      formTitle:"טופס פירוט",
-      AddNewField:"הוסף שדה",
-      EditForm:"ערוך טופס:"
-
-
+    detailForm: {
+      fieldName: "שם שדה",
+      AddField: "הוסף שדה",
+      optional: "לא חובה",
+      required: "חובה",
+      formTitle: "טופס פירוט",
+      AddNewField: "הוסף שדה",
+      EditForm: "ערוך טופס:",
     },
-    book:{
-      formTitle:"טופס ספר",
-      bookName:"שם הספר",
-      bookDescription:"תיאור ספר",
-      bookCover:"כריכה",
-      bookFile:"קובץ ספר",
-  
-    }
+    book: {
+      formTitle: "טופס ספר",
+      bookName: "שם הספר",
+      bookDescription: "תיאור ספר",
+      bookCover: "כריכה",
+      bookFile: "קובץ ספר",
+    },
   },
   intervals: {
     "seconds#other": "{count} שניות",
@@ -138,12 +135,13 @@ export default {
     video: "וידאו",
     text: "טקסט",
     file: "קובץ",
-    serialNo: "לא.",
+    serialNo: "מס.",
     title: "כותרת",
-    fileName: "שם הקובץ",
+    fileName: "שם הלימוד",
     description: "תיאור",
     dailyStudies: "לימודים יומיים",
     requests: "בקשות",
+    fileType: "עלות",
 
     name: "שֵׁם",
     address: "כתובת",
@@ -162,11 +160,12 @@ export default {
     noContent: "אין תוכן",
     content: "תוכן",
     timeToRead: "זמן לקריאה",
-  },
-  micsWords:{
-    "Choose a Parent Category":"בחר קטגוריית אב",
-    choiseBetweenPdfAndFile:"אתה יכול להעלות קובץ pdf או להזין תוכן טקסט",
-    chooseType:"בחר את סוג התוכן שלך",
-  },
 
+    showDate: "תאריך",
+  },
+  micsWords: {
+    chooseParentCategory: "בחר קטגוריית אב",
+    chooseBetweenPdfAndFile: "אתה יכול להעלות קובץ pdf או להזין תוכן טקסט",
+    chooseType: "בחר את סוג התוכן שלך",
+  },
 } as const;

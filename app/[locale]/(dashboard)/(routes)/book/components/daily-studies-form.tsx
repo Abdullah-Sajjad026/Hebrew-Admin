@@ -25,7 +25,13 @@ import {
   fileSchema,
   DEFAULT_ACCEPTED_IMAGE_TYPES,
 } from "@/constants/general-schemas";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const formSchema = z
   .object({
@@ -45,7 +51,7 @@ const formSchema = z
     coverImageSrc: z.string().optional(),
     fileName: z.string().nonempty(),
     // showDate : z.string(),
-    contentType: z.enum(["pdf", "text",]),
+    contentType: z.enum(["pdf", "text"]),
   })
   .superRefine((val, ctx) => {
     if (val.action === "add") {
@@ -94,7 +100,7 @@ const INITIAL_VALUES: DefaultValues<DailyStudiesFormState> = {
   pdf: undefined,
   pdfSrc: "",
   coverImageSrc: "",
-  
+
   contentType: "pdf",
 };
 
@@ -117,8 +123,10 @@ const DailyStudiesForm = ({
 }: DailyStudiesFormProps) => {
   const t = useI18n();
   const editor = useEditor({});
-  type TyprOfDoc = "pdf" | "text" | undefined
-  const [contentType, setContentType] = React.useState<TyprOfDoc>(initialValues.contentType);
+  type TyprOfDoc = "pdf" | "text" | undefined;
+  const [contentType, setContentType] = React.useState<TyprOfDoc>(
+    initialValues.contentType
+  );
   const form = useForm<DailyStudiesFormState>({
     resolver: zodResolver(formSchema),
     defaultValues: initialValues,
@@ -204,7 +212,7 @@ const DailyStudiesForm = ({
                   </FormLabel>
                   <div className="space-y-2">
                     <Select
-                      onValueChange={(value)=>{
+                      onValueChange={(value) => {
                         field.onChange(value);
                         setContentType(value as TyprOfDoc);
                       }}
@@ -212,18 +220,19 @@ const DailyStudiesForm = ({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder={t("micsWords.chooseType")} />
+                          <SelectValue
+                            placeholder={t("micsWords.chooseType")}
+                          />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="pdf">PDF</SelectItem>
                         <SelectItem value="text">TEXT</SelectItem>
-                        
                       </SelectContent>
                     </Select>
 
                     <FormDescription>
-                      {t("micsWords.choiseBetweenPdfAndFile")}
+                      {t("micsWords.chooseBetweenPdfAndFile")}
                     </FormDescription>
 
                     <FormMessage />
@@ -231,63 +240,60 @@ const DailyStudiesForm = ({
                 </FormItem>
               )}
             />
-            {
-            contentType === "text" ?
-
-            <FormField
-            control={form.control}
-            name="studyContent"
-            render={({ field }) => (
-              <FormItem className="flex gap-4 space-y-0">
-                <FormLabel className="basis-28 whitespace-nowrap">
-                  {t("pages.dailyStudies.studyContent")}:
-                </FormLabel>
-                <div className="flex-col gap-2">
-                  <FormControl>
-                    {/* <Textarea
+            {contentType === "text" ? (
+              <FormField
+                control={form.control}
+                name="studyContent"
+                render={({ field }) => (
+                  <FormItem className="flex gap-4 space-y-0">
+                    <FormLabel className="basis-28 whitespace-nowrap">
+                      {t("pages.dailyStudies.studyContent")}:
+                    </FormLabel>
+                    <div className="flex-col gap-2">
+                      <FormControl>
+                        {/* <Textarea
                       {...field}
                       cols={80}
                       rows={10}
                       placeholder="Enter your study content here"
                     /> */}
 
-                    <Editable
-                      editor={editor}
-                      value={field.value!}
-                      onChange={field.onChange}
-                      className="w-full min-w-[700px] min-h-[400px] border border-primary"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </div>
-              </FormItem>
-            )}
-          />
-          :
+                        <Editable
+                          editor={editor}
+                          value={field.value!}
+                          onChange={field.onChange}
+                          className="w-full min-w-[700px] min-h-[400px] border border-primary"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
+            ) : (
+              <FormField
+                control={form.control}
+                name="pdf"
+                render={({ field }) => (
+                  <FormItem className="space-y-0 flex gap-2">
+                    <FormLabel className="basis-28 whitespace-nowrap">
+                      {"Pdf"}:
+                    </FormLabel>
+                    <div className="space-y-5">
+                      <FormControl>
+                        <FileInputBox
+                          {...field}
+                          fileType="pdf"
+                          fileSrc={form.getValues().pdfSrc}
+                        />
+                      </FormControl>
 
-          <FormField
-            control={form.control}
-            name="pdf"
-            render={({ field }) => (
-              <FormItem className="space-y-0 flex gap-2">
-                <FormLabel className="basis-28 whitespace-nowrap">
-                  {"Pdf"}:
-                </FormLabel>
-                <div className="space-y-5">
-                  <FormControl>
-                    <FileInputBox
-                      {...field}
-                      fileType="pdf"
-                      fileSrc={form.getValues().pdfSrc}
-                    />
-                  </FormControl>
-
-                  <FormMessage />
-                </div>
-              </FormItem>
+                      <FormMessage />
+                    </div>
+                  </FormItem>
+                )}
+              />
             )}
-          />
-            }
 
             {footer && footer}
           </div>

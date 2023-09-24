@@ -146,13 +146,12 @@ export default function Page() {
             ]}
             labelKey="name"
             valueKey="id"
-            placeholder={t("micsWords.Choose a Parent Category")}
+            placeholder={t("micsWords.chooseParentCategory")}
             value={parentId}
             onValueChange={setParentId}
           />
         </div>
         <NavLink href={`/subcategories/add`} className={buttonVariants()}>
-          
           {t("pages.categories.addCategory")}
         </NavLink>
       </div>

@@ -209,15 +209,13 @@ export default function HomeSlider() {
                 />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="2000">
-                  {t("intervals.seconds", { count: 2 })}
-                </SelectItem>
-                <SelectItem value="5000">
-                  {t("intervals.seconds", { count: 5 })}
-                </SelectItem>
-                <SelectItem value="10000">
-                  {t("intervals.seconds", { count: 10 })}
-                </SelectItem>
+                {[
+                  new Array(15).map((item, index: number) => (
+                    <SelectItem value={`${(index + 1) * 1000}`} key={index}>
+                      {t("intervals.seconds", { count: index + 1 })}
+                    </SelectItem>
+                  )),
+                ]}
               </SelectContent>
             </Select>
           </div>
