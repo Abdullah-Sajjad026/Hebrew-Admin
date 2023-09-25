@@ -1,8 +1,9 @@
 "use client";
 import React from "react";
+import toast from "react-hot-toast";
 import DailyStudiesForm, {
   DailyStudiesFormState,
-} from "../components/daily-studies-form";
+} from "../components/books-form";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import {
   addDoc,
@@ -15,7 +16,6 @@ import { fireStorage, firestore } from "@/lib/firebase/firebase-config";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Check, X } from "lucide-react";
-import toast from "react-hot-toast";
 
 export default function Page() {
   const [isUploading, setIsUploading] = React.useState(false);
@@ -43,7 +43,7 @@ export default function Page() {
       const studyFile: Partial<SingleStudyData> = {
         name: values.fileName,
         createdAt: serverTimestamp(),
-       
+
         contentType: values.contentType,
       };
 

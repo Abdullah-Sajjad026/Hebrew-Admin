@@ -2,7 +2,7 @@
 import React from "react";
 import DailyStudiesForm, {
   DailyStudiesFormState,
-} from "../components/daily-studies-form";
+} from "../components/books-form";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { fireStorage, firestore } from "@/lib/firebase/firebase-config";
@@ -11,12 +11,12 @@ import { useRouter } from "next/navigation";
 import { Check, X } from "lucide-react";
 import toast from "react-hot-toast";
 import { useI18n } from "@/internationalization/client";
-import useDailyStudiesForm from "../components/hooks/use-daliy-studies-form";
+import useBooksForm from "../components/hooks/use-books-form";
 
 export default function Page() {
   const t = useI18n();
   const router = useRouter();
-  const { editingDoc } = useDailyStudiesForm();
+  const { editingDoc } = useBooksForm();
 
   const [isUploading, setIsUploading] = React.useState(false);
 
@@ -25,10 +25,7 @@ export default function Page() {
     setIsUploading(true);
 
     const studyDoc = doc(firestore, "book", editingDoc?.id!);
-    const coverImgRef = ref(
-      fireStorage,
-      `book/${editingDoc?.id}-image`
-    );
+    const coverImgRef = ref(fireStorage, `book/${editingDoc?.id}-image`);
     const pdfRef = ref(fireStorage, `book/${editingDoc?.id}-pdf`);
 
     try {

@@ -8,6 +8,7 @@ import {
   DEFAULT_ACCEPTED_VIDEO_TYPES,
 } from "@/constants/general-schemas";
 import { Button, buttonVariants } from "./button";
+import { XIcon } from "lucide-react";
 
 export interface FileInputBoxProps {
   fileType: "image" | "video" | "pdf";
@@ -26,14 +27,37 @@ export const FileInputBox = React.forwardRef<
 
   return (
     <label htmlFor={id}>
-      <div className="space-y-2">
+      <div className="space-y-2 relative">
         {/* showing a box input with box preview for only image and video file inputs */}
         {["image", "video"].includes(fileType) && (
-          <div className="h-48 w-72 overflow-hidden rounded-md border-primary border-2 flex items-center justify-center">
+          <div className=" h-48 w-72 overflow-hidden rounded-md border-primary border-2 flex items-center justify-center">
             {!value && !fileSrc && (
               <span className="text-placeholder font-medium text-md">
                 + {fileType === "image" ? t("words.image") : t("words.video")}
               </span>
+            )}
+
+            {value instanceof File && (
+              // Remove file icon positioned at top right corner of the box
+              <Button
+                className="absolute top-2 left-2 h-6 w-6"
+                size="icon"
+                variant="destructive"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  fieldProps.onChange({
+                    ...e,
+                    target: {
+                      ...e.target,
+                      // @ts-ignore
+                      value: null,
+                    },
+                  });
+                }}
+              >
+                <XIcon />
+              </Button>
             )}
 
             {fileType === "image" && (value instanceof File || fileSrc) && (

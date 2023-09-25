@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
@@ -15,16 +16,17 @@ import { ListItem } from "@/components/ui/list-item";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { useI18n } from "@/internationalization/client";
 import { Input } from "@/components/ui/input";
-import useDailyStudiesForm from "./components/hooks/use-daliy-studies-form";
-import { useRouter } from "next/navigation";
-type  BookDoc = DailyStudyDocument
+import useBooksForm from "./components/hooks/use-books-form";
+
+type BookDoc = DailyStudyDocument;
 
 type studyData = Omit<BookDoc, "showDate">[];
+
 export default function Page() {
   const t = useI18n();
   const router = useRouter();
-  const { setEditingDoc } = useDailyStudiesForm();
-  
+  const { setEditingDoc } = useBooksForm();
+
   const [studies, setStudies] = useState<{
     state: RequestState;
     data: studyData;
@@ -42,9 +44,6 @@ export default function Page() {
     const unsubscribe = onSnapshot(
       collection(firestore, "book"),
       (snapshot) => {
-       
-      
-
         const studyData: studyData = [];
 
         snapshot.forEach((doc) => {

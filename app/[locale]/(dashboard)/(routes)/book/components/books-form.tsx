@@ -19,7 +19,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
 
 import {
   fileSchema,
@@ -123,8 +122,8 @@ const DailyStudiesForm = ({
 }: DailyStudiesFormProps) => {
   const t = useI18n();
   const editor = useEditor({});
-  type TyprOfDoc = "pdf" | "text" | undefined;
-  const [contentType, setContentType] = React.useState<TyprOfDoc>(
+  type ContentType = "pdf" | "text" | undefined;
+  const [contentType, setContentType] = React.useState<ContentType>(
     initialValues.contentType
   );
   const form = useForm<DailyStudiesFormState>({
@@ -214,7 +213,7 @@ const DailyStudiesForm = ({
                     <Select
                       onValueChange={(value) => {
                         field.onChange(value);
-                        setContentType(value as TyprOfDoc);
+                        setContentType(value as ContentType);
                       }}
                       defaultValue={field.value}
                     >
