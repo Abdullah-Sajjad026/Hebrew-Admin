@@ -1,7 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 
 import { fireStorage, firestore } from "@/lib/firebase/firebase-config";
@@ -36,25 +44,34 @@ export default function Page() {
     id: "",
   });
 
+  const [searchText, setSearchText] = useState("");
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(firestore, "daily-studies"),
-      (snapshot) => {
-        const studyData: DailyStudyDocument[] = [];
+    const constraints = [];
+    if (searchText)
+      constraints.push(
+        orderBy("name"),
+        where("name", ">=", searchText),
+        where("name", "<=", searchText + "\uf8ff")
+      );
 
-        snapshot.forEach((doc) => {
-          studyData.push({ id: doc.id, ...doc.data() } as DailyStudyDocument);
-        });
+    const q = query(collection(firestore, "daily-studies"), ...constraints);
 
-        setStudies({
-          state: "success",
-          data: studyData,
-        });
-      }
-    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const studyData: DailyStudyDocument[] = [];
+
+      snapshot.forEach((doc) => {
+        studyData.push({ id: doc.id, ...doc.data() } as DailyStudyDocument);
+      });
+
+      setStudies({
+        state: "success",
+        data: studyData,
+      });
+    });
 
     return () => unsubscribe();
-  }, []);
+  }, [searchText]);
 
   const deleteStudyFile = async () => {
     const studiesImageRef = ref(
@@ -88,7 +105,11 @@ export default function Page() {
       <div className="flex justify-between items-center gap-4">
         <div className="flex items-center gap-2">
           <span>{t("actions.search")}</span>
-          <Input />
+          <Input
+            placeholder={t("actions.search")}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
         </div>
 
         <NavLink href="/daily-studies/add" className={buttonVariants()}>

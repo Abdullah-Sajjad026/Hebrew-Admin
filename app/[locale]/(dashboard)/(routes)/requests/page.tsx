@@ -6,7 +6,14 @@ import { useI18n } from "@/internationalization/client";
 import toast from "react-hot-toast";
 
 import { firestore } from "@/lib/firebase/firebase-config";
-import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 
 import { ActionsDropdown } from "@/components/ui/actions-dropdown";
 import { Alert } from "@/components/ui/alert";
@@ -33,27 +40,35 @@ export default function Page() {
     id: "",
   });
 
+  const [searchText, setSearchText] = useState("");
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(firestore, "requests"),
-      (snapshot) => {
-        const studyData: RequestsData[] = [];
+    const constraints = [];
+    if (searchText)
+      constraints.push(
+        where("name", ">=", searchText),
+        where("name", "<=", searchText + "\uf8ff")
+      );
 
-        snapshot.forEach((doc) => {
-          studyData.push({ id: doc.id, ...doc.data() } as RequestsData);
-        });
+    const q = query(collection(firestore, "requests"), ...constraints);
 
-        const filteredData: RequestsData[] = studyData;
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const studyData: RequestsData[] = [];
 
-        setRequests({
-          state: "success",
-          data: filteredData,
-        });
-      }
-    ); //* gets all the requests and filter them if they are already approved
+      snapshot.forEach((doc) => {
+        studyData.push({ id: doc.id, ...doc.data() } as RequestsData);
+      });
+
+      const filteredData: RequestsData[] = studyData;
+
+      setRequests({
+        state: "success",
+        data: filteredData,
+      });
+    }); //* gets all the requests and filter them if they are already approved
 
     return () => unsubscribe();
-  }, []);
+  }, [searchText]);
 
   const deleteRequest = async () => {
     try {
@@ -70,7 +85,11 @@ export default function Page() {
       <div className="flex flex-row-reverse justify-between items-center gap-4">
         <div className="flex items-center gap-2">
           <span>{t("actions.search")}</span>
-          <Input />
+          <Input
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            placeholder={t("actions.search")}
+          />
         </div>
       </div>
       <ListItem className="bg-primary mt-8 py-2 rounded-full">

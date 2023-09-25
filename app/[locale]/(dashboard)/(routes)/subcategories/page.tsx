@@ -83,18 +83,15 @@ export default function Page() {
         Also add searchText if provided
       */
 
-    const q = parentId
-      ? query(
-          collection(firestore, "subcategories"),
-          where("parentId", "==", parentId),
-          where("name", ">=", searchText),
-          where("name", "<=", searchText + "\uf8ff")
-        )
-      : query(
-          collection(firestore, "subcategories"),
-          where("name", ">=", searchText),
-          where("name", "<=", searchText + "\uf8ff")
-        );
+    const constraints = [];
+    if (searchText)
+      constraints.push(
+        where("name", ">=", searchText),
+        where("name", "<=", searchText + "\uf8ff")
+      );
+    if (parentId) constraints.push(where("parentId", "==", parentId));
+
+    const q = query(collection(firestore, "subcategories"), ...constraints);
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const subcategories: SubCategoryDocument[] = [];
@@ -114,35 +111,6 @@ export default function Page() {
 
     return () => unsubscribe();
   }, [parentCategories.length, searchText, parentId, setParentCategories]);
-
-  // useEffect(() => {
-  //   if (searchText) {
-  //     const COLLECTION_NAME = "subcategories";
-
-  //     const q = query(
-  //       collection(firestore, COLLECTION_NAME),
-  //       where("name", ">=", searchText),
-  //       where("name", "<=", searchText + "\uf8ff")
-  //     );
-  //     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-  //       const data: SubCategoryDocument[] = [];
-
-  //       querySnapshot.forEach((doc) => {
-  //         data.push({
-  //           id: doc.id,
-  //           ...doc.data(),
-  //         } as SubCategoryDocument);
-  //       });
-
-  //       setSubcategories({
-  //         state: "success",
-  //         data,
-  //       });
-  //     });
-
-  //     return () => unsubscribe();
-  //   }
-  // }, [searchText]);
 
   const deleteChosenSubcategory = async () => {
     const coverImgRef = ref(
@@ -178,6 +146,7 @@ export default function Page() {
             <Input
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
+              placeholder={t("actions.search")}
             />
           </div>
 

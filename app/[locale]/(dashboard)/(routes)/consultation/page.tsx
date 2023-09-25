@@ -9,21 +9,26 @@ import { Loader } from "@/components/ui/loader";
 import { NavLink } from "@/components/ui/nav-link";
 import { useI18n } from "@/internationalization/client";
 import { fireStorage, firestore } from "@/lib/firebase/firebase-config";
-import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
-import {  Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import useConsulForm from "./components/hooks/useConsulForm";
 
-
-
 const Page = () => {
   const t = useI18n();
 
   const router = useRouter();
-  const {setForm} = useConsulForm()
+  const { setForm } = useConsulForm();
 
   const [consult, setConsult] = useState<{
     state: RequestState;
@@ -38,55 +43,65 @@ const Page = () => {
     id: "",
   });
 
+  const [searchText, setSearchText] = useState("");
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(firestore, "consultation"),
-      (snapshot) => {
-        const studyData: ConsultationDoc[] = [];
+    const constraints = [];
+    if (searchText)
+      constraints.push(
+        where("name", ">=", searchText),
+        where("name", "<=", searchText + "\uf8ff")
+      );
 
-        snapshot.forEach((doc) => {
-          studyData.push({ id: doc.id, ...doc.data() } as ConsultationDoc);
-        });
+    const q = query(collection(firestore, "consultation"), ...constraints);
 
-        setConsult({
-          state: "success",
-          data: studyData,
-        });
-      }
-    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const studyData: ConsultationDoc[] = [];
+
+      snapshot.forEach((doc) => {
+        studyData.push({ id: doc.id, ...doc.data() } as ConsultationDoc);
+      });
+
+      setConsult({
+        state: "success",
+        data: studyData,
+      });
+    });
 
     return () => unsubscribe();
-  }, []);
+  }, [searchText]);
 
   const deleteConsultFile = async () => {
     console.log("deleteConsultFile", deleteAlert.id);
-    const ConsultImgRef =  ref(
+    const ConsultImgRef = ref(
       fireStorage,
       "consultation/" + deleteAlert.id + "-image"
-    )
-    try{
-      try{
-        deleteObject(ConsultImgRef)
-        console.log('deleted image')
-      }
-      catch(e:any){
+    );
+    try {
+      try {
+        deleteObject(ConsultImgRef);
+        console.log("deleted image");
+      } catch (e: any) {
         if (e.code === "storage/object-not-found") {
           console.log("studies image not found. continuing...");
         }
       }
-      await deleteDoc(doc(firestore,'consultation',deleteAlert.id))
-    }
-    catch(e){
-      console.error(e)
+      await deleteDoc(doc(firestore, "consultation", deleteAlert.id));
+    } catch (e) {
+      console.error(e);
       toast.error("There was an error deleting this file");
     }
-  }
+  };
   return (
     <div>
       <div className="flex justify-between items-center gap-4">
         <div className="flex items-center gap-2">
           <span>{t("actions.search")}</span>
-          <Input />
+          <Input
+            placeholder={t("actions.search")}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
         </div>
 
         <NavLink href="/consultation/add" className={buttonVariants()}>
@@ -120,9 +135,9 @@ const Page = () => {
                   )}
                   <ActionsDropdown
                     onEdit={() => {
-                      setForm(data)
+                      setForm(data);
                       router.push("/consultation/edit");
-                      console.log('edit')
+                      console.log("edit");
                     }}
                     onDelete={() => {
                       setDeleteAlert({

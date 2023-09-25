@@ -109,7 +109,7 @@ export default function Page() {
           <Input
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            // placeholder={t("words.searchPlaceholder")}
+            placeholder={t("actions.search")}
           />
         </div>
 
