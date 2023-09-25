@@ -146,7 +146,7 @@ const SubcategoryForm = ({
               render={({ field }) => (
                 <FormItem className="flex gap-4 space-y-0">
                   <FormLabel className="basis-28 whitespace-nowrap">
-                    Parent Category:
+                    {t("words.parentCategory")}
                   </FormLabel>
                   <div className="flex-col gap-2 basis-96">
                     <SassySelect

@@ -157,6 +157,7 @@ export default {
     requests: "Requests",
     name: "Name",
     email: "Email",
+    parentCategory: "Parent Category",
     phoneNumber: "Phone Number",
     address: "Address",
     type: "Type",

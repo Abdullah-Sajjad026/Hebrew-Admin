@@ -142,7 +142,7 @@ export default {
     dailyStudies: "לימודים יומיים",
     requests: "בקשות",
     fileType: "עלות",
-
+    parentCategory: "קטגורית אב",
     name: "שֵׁם",
     address: "כתובת",
     email: "אימייל",

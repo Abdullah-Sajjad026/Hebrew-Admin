@@ -57,6 +57,10 @@ export default function Page() {
     id: "",
   });
 
+  const [searchText, setSearchText] = useState("");
+  // Track initial render
+  const [initialRender, setInitialRender] = useState(true);
+
   useEffect(() => {
     if (parentCategories.length === 0) {
       getDocs(collection(firestore, "categories")).then((querySnapshot) => {
@@ -75,13 +79,22 @@ export default function Page() {
         if parentId is not provided, then fetch all subcategories
         if parentId is provided, then fetch subcategories of that category
         Maybe we can use a query here
+
+        Also add searchText if provided
       */
+
     const q = parentId
       ? query(
           collection(firestore, "subcategories"),
-          where("parentId", "==", parentId)
+          where("parentId", "==", parentId),
+          where("name", ">=", searchText),
+          where("name", "<=", searchText + "\uf8ff")
         )
-      : query(collection(firestore, "subcategories"));
+      : query(
+          collection(firestore, "subcategories"),
+          where("name", ">=", searchText),
+          where("name", "<=", searchText + "\uf8ff")
+        );
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const subcategories: SubCategoryDocument[] = [];
@@ -100,7 +113,36 @@ export default function Page() {
     });
 
     return () => unsubscribe();
-  }, [parentId]);
+  }, [parentCategories.length, searchText, parentId, setParentCategories]);
+
+  // useEffect(() => {
+  //   if (searchText) {
+  //     const COLLECTION_NAME = "subcategories";
+
+  //     const q = query(
+  //       collection(firestore, COLLECTION_NAME),
+  //       where("name", ">=", searchText),
+  //       where("name", "<=", searchText + "\uf8ff")
+  //     );
+  //     const unsubscribe = onSnapshot(q, (querySnapshot) => {
+  //       const data: SubCategoryDocument[] = [];
+
+  //       querySnapshot.forEach((doc) => {
+  //         data.push({
+  //           id: doc.id,
+  //           ...doc.data(),
+  //         } as SubCategoryDocument);
+  //       });
+
+  //       setSubcategories({
+  //         state: "success",
+  //         data,
+  //       });
+  //     });
+
+  //     return () => unsubscribe();
+  //   }
+  // }, [searchText]);
 
   const deleteChosenSubcategory = async () => {
     const coverImgRef = ref(
@@ -133,7 +175,10 @@ export default function Page() {
         <div className="flex gap-3">
           <div className="flex items-center gap-2 basis-60">
             <span>{t("actions.search")}</span>
-            <Input />
+            <Input
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
           </div>
 
           <SassySelect
