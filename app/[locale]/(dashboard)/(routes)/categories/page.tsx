@@ -4,7 +4,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { toast } from "react-hot-toast";
-import { collection, deleteDoc, doc, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 
 import { fireStorage, firestore } from "@/lib/firebase/firebase-config";
@@ -39,27 +46,35 @@ export default function Page() {
     id: "",
   });
 
+  const [searchText, setSearchText] = useState("");
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(
+    const q = query(
       collection(firestore, "categories"),
-      (snapshot) => {
-        const categories: CategoryDocument[] = [];
-
-        snapshot.forEach((doc) => {
-          categories.push({ id: doc.id, ...doc.data() } as CategoryDocument);
-        });
-
-        setCategories({
-          state: "success",
-          data: categories,
-        });
-        setCategoriesInCtx(categories);
-      }
+      where("name", ">=", searchText),
+      where("name", "<=", searchText + "\uf8ff")
     );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const categories: CategoryDocument[] = [];
+
+      snapshot.forEach((doc) => {
+        categories.push({ id: doc.id, ...doc.data() } as CategoryDocument);
+      });
+
+      setCategories({
+        state: "success",
+        data: categories,
+      });
+
+      if (!searchText)
+        // Updating in Ctx only if search text is empty. means all categories are fetched
+        setCategoriesInCtx(categories);
+    });
 
     return () => unsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [searchText]);
 
   const deleteChosenCategory = async () => {
     const categoryCoverRef = ref(
@@ -86,14 +101,16 @@ export default function Page() {
     }
   };
 
-  console.log({ categories });
-
   return (
     <div>
       <div className="flex justify-between items-center gap-4">
         <div className="flex items-center gap-2">
           <span>{t("actions.search")}</span>
-          <Input />
+          <Input
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            // placeholder={t("words.searchPlaceholder")}
+          />
         </div>
 
         <NavLink href="/categories/add" className={buttonVariants()}>

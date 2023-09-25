@@ -155,7 +155,7 @@ const SubcategoryForm = ({
                       options={parentCategories}
                       labelKey="name"
                       valueKey="id"
-                      placeholder="Choose a parent category"
+                      placeholder={t("micsWords.chooseParentCategory")}
                     />
                     <FormMessage />
                   </div>
