@@ -17,6 +17,7 @@ type ActionsDropdownProps = {
   onContent?: () => void;
   onOptional?: () => void;
   onRequired?: () => void;
+  onDetailForm?: () => void;
 };
 
 export const ActionsDropdown = (props: ActionsDropdownProps) => {
@@ -38,12 +39,19 @@ export const ActionsDropdown = (props: ActionsDropdownProps) => {
             {t("words.content")}
           </DropdownMenuItem>
         )}
+
+        {props.onDetailForm && (
+          <DropdownMenuItem onClick={props.onDetailForm}>
+            {t("dashboard.sidebar.detailForm")}
+          </DropdownMenuItem>
+        )}
+
         {props.onEdit && (
           <DropdownMenuItem onClick={props.onEdit}>
             {t("actions.edit")}
           </DropdownMenuItem>
         )}
-         {props.onOptional && (
+        {props.onOptional && (
           <DropdownMenuItem onClick={props.onOptional}>
             {t("pages.detailForm.optional")}
           </DropdownMenuItem>
@@ -58,7 +66,6 @@ export const ActionsDropdown = (props: ActionsDropdownProps) => {
             {t("actions.delete")}
           </DropdownMenuItem>
         )}
-       
       </DropdownMenuContent>
     </DropdownMenu>
   );

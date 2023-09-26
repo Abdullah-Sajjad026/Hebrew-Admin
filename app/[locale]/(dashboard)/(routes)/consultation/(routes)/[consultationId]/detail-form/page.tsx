@@ -1,11 +1,19 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  onSnapshot,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { firestore } from "@/lib/firebase/firebase-config";
 import { useI18n } from "@/internationalization/client";
 import { useRouter } from "next/navigation";
-import { NavLink } from "@/components/ui/nav-link";
 import { Check, Plus, X } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
@@ -30,7 +38,13 @@ import {
 
 import { Input } from "@/components/ui/input";
 
-export default function Page() {
+export default function Page({
+  params,
+}: {
+  params: {
+    consultationId: string;
+  };
+}) {
   const t = useI18n();
   const router = useRouter();
   const [fields, setFields] = React.useState<filed[] | null>([]);
@@ -38,22 +52,53 @@ export default function Page() {
   const [newFieldName, setNewFieldName] = React.useState("");
   const [isUploading, setIsUploading] = React.useState(false);
 
+  const [existingFormId, setExistingFormId] = React.useState<string | null>(
+    null
+  );
+
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(firestore, "appconfig", "detail-form"),
-      (doc) => {
-        if (doc.exists()) {
-          console.log("Document data:", doc.data());
-
-          const filteredData = doc.data()?.fields;
-
-          setFields(filteredData);
+    // validating if consultation exists
+    getDoc(doc(firestore, "consultation", params.consultationId))
+      .then((doc) => {
+        // If does not exist, redirect to 404
+        if (!doc.exists()) {
+          router.push("/404");
         }
-      }
+      })
+      .catch((error) => {
+        console.log(error);
+        // If error, redirect to 404
+        toast.error("Something went wrong");
+        router.push("/404");
+      });
+
+    // Preparing query to get detail form for this consultation
+    const q = query(
+      collection(firestore, "detail-forms"),
+      where("consultationId", "==", params.consultationId)
     );
 
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      // Accessing fields property for this consultation's details form
+
+      if (querySnapshot.docs.length === 0) return;
+
+      setExistingFormId(querySnapshot.docs[0].id);
+      const fieldsObj = querySnapshot.docs[0].data().fields;
+
+      // Converting object to array
+      const fieldsArray = Object.keys(fieldsObj).map((key) => {
+        return {
+          name: key,
+          value: fieldsObj[key],
+        };
+      });
+
+      setFields(fieldsArray);
+    });
+
     return () => unsubscribe();
-  }, []);
+  }, [params.consultationId]);
 
   const handleChange = (value: string, name: string) => {
     // handle if the user changes from required to optional or vice versa
@@ -87,23 +132,38 @@ export default function Page() {
   };
   const onSubmit = async () => {
     // upload the fields to the firebase
-    let loadingToastId = toast.loading("Adding Links...");
+    let loadingToastId = toast.loading("Loading...");
     setIsUploading(true);
-    const DetailFormDoc = doc(firestore, "appconfig", "detail-form");
+
+    const updatedFields = fields?.reduce((acc, field) => {
+      return { ...acc, [field.name]: field.value };
+    }, {});
+
+    const collectionRef = collection(firestore, "detail-forms");
 
     try {
-      updateDoc(DetailFormDoc, {
-        fields: fields,
-      });
-      toast.success("field Added Successfully");
+      if (!existingFormId)
+        await addDoc(collectionRef, {
+          fields: updatedFields,
+          consultationId: params.consultationId,
+        });
+      else {
+        const docRef = doc(firestore, "detail-forms", existingFormId);
+        await updateDoc(docRef, {
+          fields: updatedFields,
+        });
+      }
+
+      toast.dismiss(loadingToastId);
+      toast.success("Updated successfully");
+      setIsUploading(false);
+      router.push(`/consultation/`);
+    } catch (error) {
       toast.dismiss(loadingToastId);
       setIsUploading(false);
-      router.back();
-    } catch (e) {
+
+      console.log(error);
       toast.error("Something went wrong");
-      toast.dismiss(loadingToastId);
-      setIsUploading(false);
-      console.log(e);
     }
   };
 
@@ -123,35 +183,33 @@ export default function Page() {
           <Plus className="mr-2" size={16} />
         </button>
       </div>
-      <div className="mt-6 flex flex-row flex-wrap gap-10">
-        {fields?.map((field, index) => {
-          return (
-            <div className="flex flex-row items-center " key={index}>
-              <span className="font-md text-md">{field.name} :</span>
-              <div className="space-y-2 mr-4">
-                <Select
-                  onValueChange={(value) => {
-                    handleChange(value, field.name);
-                  }}
-                  defaultValue={field.value === true ? "Required" : "Optional"}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose" />
-                  </SelectTrigger>
+      <div className="mt-6 grid grid-cols-3 gap-8">
+        {fields?.map((field, index) => (
+          <div className="flex flex-row items-center justify-start" key={index}>
+            <span className="font-md text-md">{field.name} :</span>
+            <div className="space-y-2 mr-4">
+              <Select
+                onValueChange={(value) => {
+                  handleChange(value, field.name);
+                }}
+                defaultValue={field.value === true ? "Required" : "Optional"}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose" />
+                </SelectTrigger>
 
-                  <SelectContent>
-                    <SelectItem value="Required">
-                      {t("pages.detailForm.required")}
-                    </SelectItem>
-                    <SelectItem value="Optional">
-                      {t("pages.detailForm.optional")}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                <SelectContent>
+                  <SelectItem value="Required">
+                    {t("pages.detailForm.required")}
+                  </SelectItem>
+                  <SelectItem value="Optional">
+                    {t("pages.detailForm.optional")}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
       <div className="absolute bottom-5 w-[95%]">
         <div className="mt-4 flex justify-between">
@@ -178,8 +236,8 @@ export default function Page() {
             disabled={isUploading}
           >
             <Check className="w-5 h-5 ml-1" />
-            
-            {t('actions.approve')}
+
+            {t("actions.approve")}
           </Button>
         </div>
       </div>

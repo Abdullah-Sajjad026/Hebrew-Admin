@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import useConsulForm from "../components/hooks/useConsulForm";
-import AddFileForm, { AddFileFormState } from "../components/add-file-form";
+import useConsulForm from "../../components/hooks/use-consultation-form";
+import AddFileForm, { AddFileFormState } from "../../components/add-file-form";
 import { useRouter } from "next/navigation";
 import { useI18n } from "@/internationalization/client";
 import { Button } from "@/components/ui/button";
@@ -75,7 +75,7 @@ const Page = () => {
 
       (updatedDoc["coverImage"] = newCoverSrc || editingForm?.coverImage),
         (updatedDoc["videoLink"] = videoLink || editingForm?.videoLink);
-        console.log(updatedDoc);
+      console.log(updatedDoc);
 
       await updateDoc(studyDoc, updatedDoc);
       toast.dismiss(loadingToastId);

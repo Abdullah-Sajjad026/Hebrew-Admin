@@ -73,11 +73,11 @@ export const DashboardSidebar = () => {
       href: `/home-slider`,
       icon: GalleryVertical,
     },
-    {
-      name: scopedT("detailForm"),
-      href: `/detail-form`,
-      icon: FileText,
-    },
+    // {
+    //   name: scopedT("detailForm"),
+    //   href: `/detail-form`,
+    //   icon: FileText,
+    // },
     {
       name: scopedT("popupNews"),
       href: `/popup-news`,

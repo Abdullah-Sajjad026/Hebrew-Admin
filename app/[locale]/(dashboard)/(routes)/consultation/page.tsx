@@ -22,7 +22,7 @@ import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import useConsulForm from "./components/hooks/useConsulForm";
+import useConsulForm from "./components/hooks/use-consultation-form";
 
 const Page = () => {
   const t = useI18n();
@@ -137,13 +137,15 @@ const Page = () => {
                     onEdit={() => {
                       setForm(data);
                       router.push("/consultation/edit");
-                      console.log("edit");
                     }}
                     onDelete={() => {
                       setDeleteAlert({
                         isOpen: true,
                         id: data.id,
                       });
+                    }}
+                    onDetailForm={() => {
+                      router.push(`/consultation/${data.id}/detail-form`);
                     }}
                   />
                 </ListItem>

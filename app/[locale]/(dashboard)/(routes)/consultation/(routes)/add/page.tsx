@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import AddFileForm, { AddFileFormState } from "../components/add-file-form";
+import AddFileForm, { AddFileFormState } from "../../components/add-file-form";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import { useRouter } from "next/navigation";
