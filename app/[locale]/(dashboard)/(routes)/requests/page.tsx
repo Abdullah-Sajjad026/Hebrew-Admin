@@ -82,7 +82,7 @@ export default function Page() {
 
   return (
     <div>
-      <div className="flex flex-row-reverse justify-between items-center gap-4">
+      <div className="flex justify-between items-center gap-4">
         <div className="flex items-center gap-2">
           <span>{t("actions.search")}</span>
           <Input
@@ -117,29 +117,18 @@ export default function Page() {
                     <span className="text-red-500"> {data.type}</span>
                   )}
                   <span>{data.approve ? "Yes" : "No"}</span>
-                  {data.approve === false ? (
-                    <ActionsDropdown
-                      onApprove={() => {
-                        setEditingDoc(data);
-                        router.push("/requests/approve");
-                      }}
-                      onDelete={() => {
-                        setDeleteAlert({
-                          isOpen: true,
-                          id: data.id,
-                        });
-                      }}
-                    />
-                  ) : (
-                    <ActionsDropdown
-                      onDelete={() => {
-                        setDeleteAlert({
-                          isOpen: true,
-                          id: data.id,
-                        });
-                      }}
-                    />
-                  )}
+                  <ActionsDropdown
+                    onDetails={() => {
+                      setEditingDoc(data);
+                      router.push("/requests/details");
+                    }}
+                    onDelete={() => {
+                      setDeleteAlert({
+                        isOpen: true,
+                        id: data.id,
+                      });
+                    }}
+                  />
                 </ListItem>
               );
             })}

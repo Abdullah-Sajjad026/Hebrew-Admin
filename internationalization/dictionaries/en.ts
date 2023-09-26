@@ -130,6 +130,7 @@ export default {
     edit: "Edit",
     add: "Add",
     new: "New",
+    back: "Back",
 
     delete: "Delete",
     addFile: "Add File",
@@ -156,6 +157,7 @@ export default {
     fileName: "File Name",
     requests: "Requests",
     name: "Name",
+    details: "Details",
     email: "Email",
     parentCategory: "Parent Category",
     phoneNumber: "Phone Number",

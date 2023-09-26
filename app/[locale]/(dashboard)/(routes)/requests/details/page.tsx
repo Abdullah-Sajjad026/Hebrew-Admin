@@ -28,9 +28,10 @@ function Page() {
     if (editingDoc) {
       setIncomingDoc(editingDoc);
     } else {
-      console.log("no doc");
+      toast.error("Not Found");
+      router.back();
     }
-  }, []);
+  }, [editingDoc]);
 
   const handleSubmit = async (id: string) => {
     const loadingToastId = toast.loading("Approving...");
@@ -39,73 +40,55 @@ function Page() {
 
     const requestRef = doc(firestore, "requests", id); // gets the request doc
     try {
+      // updates the request doc
       await updateDoc(requestRef, {
         approve: true,
         updatedAt: serverTimestamp(),
-      }); // updates the request doc
+      });
       toast.dismiss(loadingToastId);
       toast.success("Request approved successfully");
       router.back();
     } catch (error) {
-      console.log(error); // logs the error if error occurs
+      // logs the error if error occurs
+      console.log(error);
       toast.dismiss(loadingToastId);
       toast.error("Error approving request");
     }
   };
   return (
-    <div>
-      <div className="space-y-8">
+    <div className="flex flex-col justify-between gap-3">
+      <div className="space-y-8 ">
         <div className="flex justify-between">
           <Label>{t("pages.requests.formTitle")}</Label>
         </div>
         <div className="mt-18">
-          {incomingDoc !== null && (
-            <div>
-              <div className="flex flex-row items-center mt-4 ">
+          {incomingDoc &&
+            incomingDoc.fields &&
+            Object.entries(incomingDoc.fields).map(([key, value]) => (
+              <div className="flex gap-2 mt-4 w-full" key={key}>
                 <Label className="basis-36 text-base whitespace-nowrap font-medium">
-                  {t("pages.requests.name")}:
+                  {key}:
                 </Label>
-                <p className="text-base ">{incomingDoc.userInfo.name}</p>
+                <p className="text-base">{value}</p>
               </div>
-              <div className="flex flex-row items-center mt-4 ">
-                <Label className="basis-36 text-base whitespace-nowrap font-medium ">
-                  {t("pages.requests.email")}:
-                </Label>
-                <p className="text-base ">{incomingDoc.userInfo.email}</p>
-              </div>
-              <div className="flex flex-row items-center mt-4 ">
-                <Label className="basis-36 text-base whitespace-nowrap font-medium">
-                  {t("pages.requests.phoneNumber")}:
-                </Label>
-                <p className="text-base ">{incomingDoc.userInfo.phoneNo}</p>
-              </div>
-              <div className="flex flex-row items-center mt-4 ">
-                <Label className="basis-36 text-base whitespace-nowrap font-medium">
-                  {t("pages.requests.address")}:
-                </Label>
-                <p className="text-base ">{incomingDoc.userInfo.address}</p>
-              </div>
-            </div>
-          )}
+            ))}
         </div>
       </div>
-      <div className="absolute bottom-0 w-[95%]">
-        <footer className="mt-8 flex justify-between ">
-          <Button
-            size={"lg"}
-            variant="outline"
-            type="reset"
-            className="mx-4"
-            disabled={isUploading}
-            onClick={() => {
-              router.back();
-            }}
-          >
-            <X className="w-5 h-5 ml-1" />
-            Cancel
-            {}
-          </Button>
-
+      <footer className="flex justify-between ">
+        <Button
+          size={"lg"}
+          variant="outline"
+          type="reset"
+          className="mx-4"
+          disabled={isUploading}
+          onClick={() => {
+            router.back();
+          }}
+        >
+          <X className="w-5 h-5 ml-1" />
+          {t("actions.back")}
+        </Button>
+        {!incomingDoc?.approve && (
           <Button
             size={"lg"}
             onClick={() => {
@@ -115,10 +98,9 @@ function Page() {
           >
             <Check className="w-5 h-5 ml-1" />
             {t("actions.approve")}
-            {}
           </Button>
-        </footer>
-      </div>
+        )}
+      </footer>
     </div>
   );
 }

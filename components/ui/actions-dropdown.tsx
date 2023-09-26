@@ -17,6 +17,7 @@ type ActionsDropdownProps = {
   onContent?: () => void;
   onOptional?: () => void;
   onRequired?: () => void;
+  onDetails?: () => void;
   onDetailForm?: () => void;
 };
 
@@ -43,6 +44,12 @@ export const ActionsDropdown = (props: ActionsDropdownProps) => {
         {props.onDetailForm && (
           <DropdownMenuItem onClick={props.onDetailForm}>
             {t("dashboard.sidebar.detailForm")}
+          </DropdownMenuItem>
+        )}
+
+        {props.onDetails && (
+          <DropdownMenuItem onClick={props.onDetails}>
+            {t("words.details")}
           </DropdownMenuItem>
         )}
 

@@ -9,4 +9,7 @@ type RequestsData = {
     phoneNo: string;
     address: string;
   };
+  fields: {
+    [key: string]: string;
+  };
 };
