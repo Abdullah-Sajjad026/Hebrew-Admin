@@ -35,57 +35,53 @@ export const DashboardSidebar = () => {
   const sidebarItems = [
     {
       name: scopedT("categories"),
-      href: `/categories`,
+      href: `/categories?title=${scopedT("categories")}`,
       icon: LayoutDashboard,
     },
     {
       name: scopedT("subcategories"),
-      href: `/subcategories`,
+      href: `/subcategories?title=${scopedT("subcategories")}`,
       icon: LayoutList,
     },
     {
       name: scopedT("links"),
-      href: `/links`,
+      href: `/links?title=${scopedT("links")}`,
       icon: Share2,
     },
     {
       name: scopedT("consultation"),
-      href: `/consultation`,
+      href: `/consultation?title=${scopedT("consultation")}`,
       icon: Banknote,
     },
     {
       name: scopedT("requests"),
-      href: `/requests`,
+      href: `/requests?title=${scopedT("requests")}`,
       icon: UserCheck,
     },
     {
       name: scopedT("settings"),
-      href: `/settings`,
+      href: `/settings?title=${scopedT("settings")}`,
       icon: Settings,
     },
     {
       name: scopedT("dailyStudies"),
-      href: `/daily-studies`,
+      href: `/daily-studies?title=${scopedT("dailyStudies")}`,
       icon: BookOpen,
     },
     {
       name: scopedT("homeSlider"),
-      href: `/home-slider`,
+      href: `/home-slider?title=${scopedT("homeSlider")}`,
       icon: GalleryVertical,
     },
-    // {
-    //   name: scopedT("detailForm"),
-    //   href: `/detail-form`,
-    //   icon: FileText,
-    // },
+
     {
       name: scopedT("popupNews"),
-      href: `/popup-news`,
+      href: `/popup-news?title=${scopedT("popupNews")}`,
       icon: Newspaper,
     },
     {
       name: scopedT("book"),
-      href: `/book`,
+      href: `/book?title=${scopedT("book")}`,
       icon: Book,
     },
   ];

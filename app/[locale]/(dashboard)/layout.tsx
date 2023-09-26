@@ -1,5 +1,6 @@
 "use client";
-import { useRouter } from "next/navigation";
+
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthContext } from "@/contexts/auth-context";
 
 import { Card } from "@/components/ui/card";
@@ -17,15 +18,11 @@ export default function DashboardRootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { isLoggedIn, authLoading } = useAuthContext();
 
   useEffect(() => {
-    console.log({
-      isLoggedIn,
-      authLoading,
-    });
-
     if (!authLoading)
       if (!isLoggedIn) {
         router.push("/login");
@@ -43,7 +40,7 @@ export default function DashboardRootLayout({
             <main className="p-6 flex-grow h-[calc(100vh-5rem)]">
               {/* we need a global card in dashboard where the content is gonna rest  */}
               <div className="h-8 pr-6">
-                <h3>לימודים יומיים</h3>
+                <h3>{searchParams.get("title")}</h3>
               </div>
               <Card className="p-3 rounded-2xl h-[calc(100%-2rem)] border-primary content-wrapper">
                 <ScrollArea dir="rtl" className="h-full">
