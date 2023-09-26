@@ -3,6 +3,7 @@
 import { ActionsDropdown } from "@/components/ui/actions-dropdown";
 import { Alert } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ConfirmationDialog } from "@/components/ui/confirmation-dialog";
 import { ListItem } from "@/components/ui/list-item";
 import { Loader } from "@/components/ui/loader";
@@ -16,6 +17,7 @@ import {
   deleteDoc,
   doc,
   onSnapshot,
+  updateDoc,
 } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import Image from "next/image";
@@ -37,6 +39,20 @@ export default function PopupNews() {
     id: "",
   });
 
+  const changeNewsStatus = (id: string, newStatus: boolean) => {
+    const newsRef = doc(firestore, "news", id);
+
+    try {
+      updateDoc(newsRef, {
+        active: newStatus,
+      });
+    } catch (error) {
+      console.log(error);
+      // toast.error(t("pages.newsPopup.changeStatusError"));
+      toast.error("There was an error changing the news status");
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(firestore, "news"),
@@ -56,8 +72,6 @@ export default function PopupNews() {
 
     return () => unsubscribe();
   }, []);
-
-  console.log({ news });
 
   return (
     <div>
@@ -100,7 +114,13 @@ export default function PopupNews() {
                       <span>No video</span>
                     )}
                   </div>
-                  <div>
+                  <div className="flex items-start gap-1 z-10">
+                    <Checkbox
+                      defaultChecked={news.active}
+                      onCheckedChange={(checked: boolean) =>
+                        changeNewsStatus(news.id, checked)
+                      }
+                    />
                     <ActionsDropdown
                       onDelete={() =>
                         setDeleteAlert({

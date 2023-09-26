@@ -52,6 +52,7 @@ export default function Page() {
         image: "",
         video: "",
         createdAt: serverTimestamp(),
+        active: true,
       });
 
       // creating a reference to image and video in storage
