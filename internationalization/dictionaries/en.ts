@@ -139,6 +139,7 @@ export default {
     uploadImage: "Upload Image",
     uploadVideo: "Upload Video",
     approve: "Approve",
+    Assigned:"Assigned"
   },
   messages: {
     areYouSure: "Are you sure?",

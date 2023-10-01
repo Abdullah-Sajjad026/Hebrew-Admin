@@ -45,6 +45,7 @@ export default function Page() {
         createdAt: serverTimestamp(),
         showDate: values.showDate,
         contentType: values.contentType,
+        isAssigned: false,
       };
 
       if (values.contentType === "text") {

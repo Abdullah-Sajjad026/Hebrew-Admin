@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import useSubcategoryContentForm from "./hooks/use-subcategory-content-form";
+import { Dot } from "lucide-react";
 
 /**
  * Subcategory Content Page
@@ -167,6 +168,7 @@ export default function Page({
       <ListItem className="bg-primary mt-8 py-2 rounded-full">
         <span>{t("words.serialNo")}</span>
         <span>{t("words.fileName")}</span>
+        <span>{t("actions.Assigned")}</span>
         <span>{t("actions.edit")}</span>
       </ListItem>
 
@@ -182,6 +184,7 @@ export default function Page({
                 <ListItem className="rounded-lg" key={data.id}>
                   <span>{index + 1}</span>
                   <span>{data.name}</span>
+                  <span><Dot color={data.isAssigned ? 'orange':'green'} className="w-10 h-10"/></span>
                   <ActionsDropdown
                     onEdit={() => {
                       setEditingDoc(data);

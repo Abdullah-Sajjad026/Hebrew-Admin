@@ -5,4 +5,5 @@ type SubCategoryDocument = {
   parentId: string;
   createdAt: FieldValue;
   updatedAt: FieldValue;
+  isAssigned?:boolean
 };

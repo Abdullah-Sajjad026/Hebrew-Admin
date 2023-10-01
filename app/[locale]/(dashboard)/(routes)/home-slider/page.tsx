@@ -28,7 +28,7 @@ import {
   ref,
   uploadBytes,
 } from "firebase/storage";
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
@@ -209,13 +209,52 @@ export default function HomeSlider() {
                 />
               </SelectTrigger>
               <SelectContent>
-                {[
-                  new Array(15).map((item, index: number) => (
-                    <SelectItem value={`${(index + 1) * 1000}`} key={index}>
-                      {t("intervals.seconds", { count: index + 1 })}
+               
+                <SelectItem value={`${1 * 1000}`} >
+                      {t("intervals.seconds", { count: 1  })}
                     </SelectItem>
-                  )),
-                ]}
+                    <SelectItem value={`${2 * 1000}`} >
+                      {t("intervals.seconds", { count: 2 })}
+                    </SelectItem>
+                    <SelectItem value={`${3 * 1000}`} >
+                      {t("intervals.seconds", { count: 3  })}
+                    </SelectItem>
+                    <SelectItem value={`${4 * 1000}`} >
+                      {t("intervals.seconds", { count: 4 })}
+                    </SelectItem>
+                    <SelectItem value={`${5 * 1000}`} >
+                      {t("intervals.seconds", { count: 5  })}
+                    </SelectItem>
+                    <SelectItem value={`${6 * 1000}`} >
+                      {t("intervals.seconds", { count: 6 })}
+                    </SelectItem>
+                    <SelectItem value={`${7 * 1000}`} >
+                      {t("intervals.seconds", { count: 7  })}
+                    </SelectItem>
+                    <SelectItem value={`${8 * 1000}`} >
+                      {t("intervals.seconds", { count: 8 })}
+                    </SelectItem>
+                    <SelectItem value={`${9 * 1000}`} >
+                      {t("intervals.seconds", { count: 9  })}
+                    </SelectItem>
+                    <SelectItem value={`${10 * 1000}`} >
+                      {t("intervals.seconds", { count: 10 })}
+                    </SelectItem>
+                    <SelectItem value={`${11 * 1000}`} >
+                      {t("intervals.seconds", { count: 11  })}
+                    </SelectItem>
+                    <SelectItem value={`${12 * 1000}`} >
+                      {t("intervals.seconds", { count: 12 })}
+                    </SelectItem>
+                    <SelectItem value={`${13 * 1000}`} >
+                      {t("intervals.seconds", { count: 13  })}
+                    </SelectItem>
+                    <SelectItem value={`${14 * 1000}`} >
+                      {t("intervals.seconds", { count: 14 })}
+                    </SelectItem>
+                    <SelectItem value={`${15 * 1000}`} >
+                      {t("intervals.seconds", { count: 15  })}
+                    </SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -255,7 +294,7 @@ export default function HomeSlider() {
                         className="absolute -top-1 -left-1 bg-destructive text-white flex justify-center items-center h-4 w-4 rounded-full"
                         onClick={() => handleDeleteImage(index, image.name)}
                       >
-                        <Minus size={24} />
+                        <X size={24} />
                       </button>
                     )}
                   </div>

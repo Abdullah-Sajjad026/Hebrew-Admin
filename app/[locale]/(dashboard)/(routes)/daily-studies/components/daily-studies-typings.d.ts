@@ -7,5 +7,6 @@ type DailyStudyDocument = {
   contentType: "text" | "pdf" | "Both";
   createdAt: FieldValue;
   updatedAt: FieldValue;
-  showDate: string
+  showDate: string,
+  isAssigned?:boolean
 };

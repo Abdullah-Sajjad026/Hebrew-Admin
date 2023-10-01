@@ -49,8 +49,8 @@ const Page = () => {
     const constraints = [];
     if (searchText)
       constraints.push(
-        where("name", ">=", searchText),
-        where("name", "<=", searchText + "\uf8ff")
+        where("fileName", ">=", searchText),
+        where("fileName", "<=", searchText + "\uf8ff")
       );
 
     const q = query(collection(firestore, "consultation"), ...constraints);

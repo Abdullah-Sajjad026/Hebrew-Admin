@@ -126,6 +126,7 @@ export default {
     uploadImage: "העלה תמונה",
     uploadVideo: "העלה וידאו",
     approve: "לְאַשֵׁר",
+    Assigned:"שוייך"
   },
   messages: {
     areYouSure: "האם אתה בטוח?",

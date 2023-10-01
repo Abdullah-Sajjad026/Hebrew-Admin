@@ -68,6 +68,7 @@ export default function Page({
         parentId: subcategoryId,
         createdAt: serverTimestamp(),
         contentType: values.contentType,
+        isAssigned: false,
       };
 
       if (values.studyContent) {

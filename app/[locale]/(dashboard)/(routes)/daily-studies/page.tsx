@@ -25,6 +25,7 @@ import { useI18n } from "@/internationalization/client";
 import { Input } from "@/components/ui/input";
 import useDailyStudiesForm from "./components/hooks/use-daliy-studies-form";
 import { useRouter } from "next/navigation";
+import { Dot } from "lucide-react";
 
 export default function Page() {
   const t = useI18n();
@@ -120,7 +121,9 @@ export default function Page() {
       <ListItem className="bg-primary mt-8 py-2 rounded-full">
         <span>{t("words.serialNo")}</span>
         <span>{t("words.dailyStudies")}</span>
+        <span>{t("actions.Assigned")}</span>
         <span>{t("actions.edit")}</span>
+        
       </ListItem>
 
       <div className="mt-6">
@@ -135,6 +138,7 @@ export default function Page() {
                 <ListItem className="rounded-lg" key={data.id}>
                   <span>{index + 1}</span>
                   <span>{data.name}</span>
+                  <span><Dot color={data.isAssigned ? "orange" : "tree"} className="w-10 h-10" /></span>
                   <ActionsDropdown
                     onEdit={() => {
                       setEditingDoc(data);

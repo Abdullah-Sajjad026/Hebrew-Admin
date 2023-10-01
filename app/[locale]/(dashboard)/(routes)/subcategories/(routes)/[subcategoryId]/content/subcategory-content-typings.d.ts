@@ -10,4 +10,5 @@ type SubcategoryContentDocument = {
 
   createdAt: any;
   updatedAt: any;
+  isAssigned?: boolean;
 };
