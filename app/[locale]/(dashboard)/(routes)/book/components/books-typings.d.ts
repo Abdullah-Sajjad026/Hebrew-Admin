@@ -7,9 +7,10 @@ type DailyStudyDocument = {
   contentType: "text" | "pdf" | "Both";
   createdAt: FieldValue;
   updatedAt: FieldValue;
-  showDate: string
+  showDate: string;
+  isAssigned: boolean;
 };
-type  BookDoc = DailyStudyDocument
+type BookDoc = DailyStudyDocument;
 
 type SingleStudyData = Omit<BookDoc, "showDate">;
 type studyData = Omit<BookDoc, "showDate">[];
